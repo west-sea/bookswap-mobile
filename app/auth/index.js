@@ -9,6 +9,8 @@ import { router } from "expo-router";
 import { useSession } from "../../contexts/auth.ctx";
 import { useGoogleAuth } from "../../hooks/useGoogleAuth";
 import GoogleSignInButton from "../../components/buttons/GoogleSignInButton";
+import api from "../../api";
+import { getErrorMessage } from "../../api/error-codes";
 
 export default function Page() {
   const [isSigningIn, setIsSigningIn] = useState(false);
@@ -18,42 +20,64 @@ export default function Page() {
   const onGoogleAuth = async () => {
     setIsSigningIn(true);
     const result = await signInWithGoogle();
-    if (result.userInfo) {
-      // TODO: Handle successful sign in appropriately
+    if (result?.userInfo) {
       const { idToken, user } = result.userInfo;
-      const { email, name, photo } = user;
-      // TODO: send login request to server
-      // IF successful, store token in session
-      signIn();
-      // router.replace("/");
-      // ELSE IF user is not registered, go to boarding page with boardingData
-      const boardingData = {
-        name,
-        photo,
-      };
-      router.replace("/auth/boarding");
-      // ELSE handle error
-    } else if (result.error) {
+      const { email, name } = user;
+      // send login request to server
+      const data = await api.auth.login(idToken);
+      if (!data || data?.code) {
+        // IF error, handle error
+        const message = getErrorMessage(data.code);
+        alert(message);
+        setIsSigningIn(false);
+        return;
+      }
+      if (data.boarding === true) {
+        // IF user is not registered, go to boarding page with boardingData
+        router.push({
+          pathname: "/auth/boarding",
+          params: {
+            userId: data.userId,
+            email,
+            name,
+          },
+        });
+      } else {
+        // IF successful, store token in session and go to welcome page
+        signIn(data.token);
+        router.push({
+          pathname: "/auth/welcome",
+          params: {
+            name,
+          },
+        });
+      }
+      setIsSigningIn(false);
+    }
+    if (!result) {
+      alert("Something went wrong. Please try again.");
+      setIsSigningIn(false);
+    }
+    if (result.error) {
       // TODO: Handle error
       const error = result.error;
       console.log(error);
       const errorCode = error.code;
-      console.log(errorCode);
       switch (errorCode) {
         case statusCodes.SIGN_IN_CANCELLED:
-          console.log("User cancelled the login flow");
+          alert("You cancelled the sign in process.");
           break;
         case statusCodes.IN_PROGRESS:
-          console.log("Sign in is in progress");
+          alert("Sign in is already in progress. Please, be patient.");
           break;
         case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
-          console.log("Play Services not available");
+          alert("Play Service not available.");
           break;
         default:
-          console.log("Something went wrong");
+          alert("Something went wrong. Please try again.");
       }
+      setIsSigningIn(false);
     }
-    setIsSigningIn(false);
   };
 
   return (

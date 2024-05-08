@@ -24,9 +24,9 @@ export function SessionProvider(props) {
   return (
     <AuthContext.Provider
       value={{
-        signIn: () => {
+        signIn: (token) => {
           // Perform sign-in logic here
-          setSession("session-token");
+          setSession(token);
         },
         signOut: () => {
           // Perform sign-out logic here

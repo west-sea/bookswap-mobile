@@ -1,11 +1,11 @@
 import { StyleSheet, View, Text } from "react-native";
 import WelcomingEmojis from "../../assets/svg/auth/welcoming-emojis.svg";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import GradientBackground from "../../components/brand/GradientBackground";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 
 export default function WelcomePage() {
-  const [name, setName] = useState("Rainbow");
+  const params = useLocalSearchParams();
 
   useEffect(() => {
     setTimeout(() => {
@@ -18,7 +18,7 @@ export default function WelcomePage() {
       <GradientBackground />
       <WelcomingEmojis />
       <Text style={styles.text}>Welcome to BookSwap</Text>
-      <Text style={styles.name}>{name}!</Text>
+      <Text style={styles.name}>{params.name || "Booklover"}!</Text>
     </View>
   );
 }

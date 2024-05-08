@@ -2,11 +2,40 @@ import { StyleSheet, View, Text } from "react-native";
 import Button from "../../components/buttons/Button";
 import ImageSelector from "../../components/input/ImageSelector";
 import InputText from "../../components/input/InputText";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
+import { useState } from "react";
 
 export default function BoardingPage() {
+  const params = useLocalSearchParams();
+  const [name, setName] = useState(params?.name || "Booklover");
+  const [nickname, setNickname] = useState(
+    params?.name.toLowerCase().split(" ").join("-") || "booklover"
+  );
+  const [preferredGenres, setPreferredGenres] = useState([]);
+
+  const onNameChange = (name) => {
+    setName(name ? name.trim() : "");
+  };
+
+  const onNicknameChange = (nickname) => {
+    setNickname(nickname ? nickname.trim() : "");
+  };
+
   const onBoardComplete = () => {
-    router.push("/auth/welcome");
+    const userData = {
+      nickname: nickname,
+      email: params?.email,
+      userId: params?.userId,
+      preferredGenres,
+    };
+    console.log(userData);
+    // TODO: send data to server
+    router.push({
+      pathname: "/auth/welcome",
+      params: {
+        name: params?.name,
+      },
+    });
   };
 
   return (
@@ -22,10 +51,15 @@ export default function BoardingPage() {
           <Text style={styles.fieldLabel}>Avatar</Text>
           <ImageSelector />
         </View>
+        {/* Name input */}
+        <View style={styles.field}>
+          <Text style={styles.fieldLabel}>Name</Text>
+          <InputText defaultValue={name} onChangeText={onNameChange} />
+        </View>
         {/* Nickname input */}
         <View style={styles.field}>
           <Text style={styles.fieldLabel}>Nickname</Text>
-          <InputText />
+          <InputText defaultValue={nickname} onChangeText={onNicknameChange} />
         </View>
         {/* Genre selector (conditionally rendered) */}
         {/* Next/Complete button */}
