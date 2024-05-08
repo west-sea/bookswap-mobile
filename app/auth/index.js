@@ -19,10 +19,7 @@ export default function Page() {
 
   const onGoogleAuth = async () => {
     setIsSigningIn(true);
-    const result = await signInWithGoogle({
-      onSignIn: onSuccessfulSignIn,
-      onError: onFailedSignIn,
-    });
+    const result = await signInWithGoogle();
     if (result.userInfo) {
       // TODO: Handle successful sign in appropriately
       console.log(userInfo);
@@ -30,8 +27,10 @@ export default function Page() {
       router.replace("/");
     } else if (result.error) {
       // TODO: Handle error
+      const error = result.error;
       console.log(error);
       const errorCode = error.code;
+      console.log(errorCode);
       switch (errorCode) {
         case statusCodes.SIGN_IN_CANCELLED:
           console.log("User cancelled the login flow");

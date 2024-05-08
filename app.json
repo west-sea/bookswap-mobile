@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "bookswap-mobile",
+    "name": "BookSwap",
     "slug": "bookswap-mobile",
     "scheme": "bookswap",
     "version": "1.0.0",
