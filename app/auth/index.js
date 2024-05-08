@@ -11,6 +11,7 @@ import introMessageSrc from "../../assets/images/auth/intro-messages.png";
 import { router } from "expo-router";
 import { useSession } from "../../contexts/auth.ctx";
 import { useGoogleAuth } from "../../hooks/useGoogleAuth";
+import IconButton from "../../components/buttons/IconButton";
 
 export default function Page() {
   const [isSigningIn, setIsSigningIn] = useState(false);
@@ -22,9 +23,23 @@ export default function Page() {
     const result = await signInWithGoogle();
     if (result.userInfo) {
       // TODO: Handle successful sign in appropriately
-      console.log(userInfo);
+      const { idToken, user } = result.userInfo;
+      const { email, name, photo } = user;
+      const loginData = {
+        idToken,
+        email,
+      };
+      // TODO: send login request to server
+      // IF successful, store token in session
       signIn();
       router.replace("/");
+      // ELSE IF user is not registered, go to boarding page with boardingData
+      const boardingData = {
+        name,
+        photo,
+      };
+      // router.replace("/auth/boarding");
+      // ELSE handle error
     } else if (result.error) {
       // TODO: Handle error
       const error = result.error;
@@ -66,7 +81,7 @@ export default function Page() {
         <View>
           {/* <IconButton
             icon="google"
-            label="Sign in With Google"
+            label="Sign in with Google"
             onPress={onGoogleAuth}
             iconColor="#DB4437"
             textColor="#000"
