@@ -1,6 +1,5 @@
-import { Image } from "react-native";
-import titleSource from "../../assets/images/brand/title-white.png";
+import TitleSvg from "../../assets/svg/brand/title.svg";
 
 export default function Title() {
-  return <Image source={titleSource} />;
+  return <TitleSvg />;
 }

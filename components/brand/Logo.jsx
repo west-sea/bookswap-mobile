@@ -1,6 +1,5 @@
-import { Image } from "react-native";
-import logoSource from "../../assets/images/brand/logo-white.png";
+import LogoSvg from "../../assets/svg/brand/logo.svg";
 
 export default function Logo() {
-  return <Image source={logoSource} />;
+  return <LogoSvg />;
 }

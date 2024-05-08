@@ -1,17 +1,14 @@
 import { useState } from "react";
-import { Image, StyleSheet, View } from "react-native";
-import {
-  GoogleSigninButton,
-  statusCodes,
-} from "@react-native-google-signin/google-signin";
+import { StyleSheet, View } from "react-native";
+import { statusCodes } from "@react-native-google-signin/google-signin";
 import GradientBackground from "../../components/brand/GradientBackground";
 import Logo from "../../components/brand/Logo";
 import Title from "../../components/brand/Title";
-import introMessageSrc from "../../assets/images/auth/intro-messages.png";
+import IntroMessagesSvg from "../../assets/svg/brand/intro-messages.svg";
 import { router } from "expo-router";
 import { useSession } from "../../contexts/auth.ctx";
 import { useGoogleAuth } from "../../hooks/useGoogleAuth";
-import IconButton from "../../components/buttons/IconButton";
+import GoogleSignInButton from "../../components/buttons/GoogleSignInButton";
 
 export default function Page() {
   const [isSigningIn, setIsSigningIn] = useState(false);
@@ -25,10 +22,6 @@ export default function Page() {
       // TODO: Handle successful sign in appropriately
       const { idToken, user } = result.userInfo;
       const { email, name, photo } = user;
-      const loginData = {
-        idToken,
-        email,
-      };
       // TODO: send login request to server
       // IF successful, store token in session
       signIn();
@@ -75,23 +68,11 @@ export default function Page() {
         </View>
         {/* Introductory messages image */}
         <View>
-          <Image source={introMessageSrc} />
+          <IntroMessagesSvg />
         </View>
         {/* Sign in with Google Button */}
         <View>
-          {/* <IconButton
-            icon="google"
-            label="Sign in with Google"
-            onPress={onGoogleAuth}
-            iconColor="#DB4437"
-            textColor="#000"
-            bgColor="#fff"
-          /> */}
-          <GoogleSigninButton
-            size={GoogleSigninButton.Size.Wide}
-            disabled={isSigningIn}
-            onPress={onGoogleAuth}
-          />
+          <GoogleSignInButton onPress={onGoogleAuth} isLoading={isSigningIn} />
         </View>
       </View>
     </View>
