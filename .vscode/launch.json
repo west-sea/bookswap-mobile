@@ -16,11 +16,12 @@
     {
       "type": "node",
       "request": "launch",
+      "console": "integratedTerminal",
       "name": "Dev Launch Program",
       "skipFiles": ["<node_internals>/**"],
       //   "program": "${workspaceFolder}\\node_modules\\expo\\AppEntry.js"
       "runtimeExecutable": "expo",
-      "runtimeArgs": ["start", "--dev-client"]
+      "runtimeArgs": ["start", "--dev-client", "-p", "8812"]
     }
   ]
 }
