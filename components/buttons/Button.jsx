@@ -1,11 +1,8 @@
 import { Pressable, View, Text, StyleSheet } from "react-native";
-import { FontAwesome } from "@expo/vector-icons";
 
-export default function IconButton({
-  icon,
+export default function Button({
   label,
   onPress,
-  iconColor = "#fff",
   textColor = "#fff",
   bgColor = "#40B250",
 }) {
@@ -15,12 +12,6 @@ export default function IconButton({
         onPress={onPress}
         style={[styles.button, { backgroundColor: bgColor }]}
       >
-        <FontAwesome
-          name={icon}
-          size={24}
-          color="black"
-          style={[styles.buttonIcon, { color: iconColor }]}
-        />
         <Text style={[styles.buttonLabel, { color: textColor }]}>{label}</Text>
       </Pressable>
     </View>

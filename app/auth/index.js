@@ -4,7 +4,7 @@ import { statusCodes } from "@react-native-google-signin/google-signin";
 import GradientBackground from "../../components/brand/GradientBackground";
 import Logo from "../../components/brand/Logo";
 import Title from "../../components/brand/Title";
-import IntroMessagesSvg from "../../assets/svg/brand/intro-messages.svg";
+import IntroMessagesSvg from "../../assets/svg/auth/intro-messages.svg";
 import { router } from "expo-router";
 import { useSession } from "../../contexts/auth.ctx";
 import { useGoogleAuth } from "../../hooks/useGoogleAuth";
@@ -25,13 +25,13 @@ export default function Page() {
       // TODO: send login request to server
       // IF successful, store token in session
       signIn();
-      router.replace("/");
+      // router.replace("/");
       // ELSE IF user is not registered, go to boarding page with boardingData
       const boardingData = {
         name,
         photo,
       };
-      // router.replace("/auth/boarding");
+      router.replace("/auth/boarding");
       // ELSE handle error
     } else if (result.error) {
       // TODO: Handle error
