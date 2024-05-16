@@ -10,10 +10,10 @@ function Onboarding({navigation}) {
     const [nickname, setNickname] = useState(''); 
 
     const profiles = [
-        { id: 1, img: require('../../assets/svg/onboard/logo.svg'), name: 'User1' },
-        { id: 2, img: require('../../assets/svg/onboard/logo.svg'), name: 'User2' },
-        { id: 3, img: require('../../assets/svg/onboard/logo.svg'), name: 'User3' },
-        { id: 4, img: require('../../assets/svg/onboard/logo.svg'), name: 'User4' }
+        { id: 1, img: require('../../assets/svg/onboard/Profile.svg'), name: 'User1' },
+        { id: 2, img: require('../../assets/svg/onboard/Profile.svg'), name: 'User2' },
+        { id: 3, img: require('../../assets/svg/onboard/Profile.svg'), name: 'User3' },
+        { id: 4, img: require('../../assets/svg/onboard/Profile.svg'), name: 'User4' }
     ];
 
     const handlePress = () => {

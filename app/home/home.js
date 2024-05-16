@@ -1,14 +1,24 @@
 import * as React from "react";
-import { Image } from "expo-image";
-import { ScrollView, StyleSheet, View, Text, Pressable, Dimensions } from "react-native";
-import { Padding, FontFamily, Border, FontSize, Color } from "../GlobalStyles";
+import { Image, ScrollView, StyleSheet, View, Text, Pressable, Dimensions } from "react-native";
+import { Padding, FontFamily, Border, FontSize, Color } from "../../GlobalStyles";
 import { router, useLocalSearchParams } from "expo-router";
 //import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
-function Home({navigation}) {
+function Home() {
+    const goSearch = () => {
+        router.push({
+            pathname: 'home/search.js',
+            params: {
+                //img,
+                //email,
+                //name,
+            },
+        });
+    };
+
   const [activeTab, setActiveTab] = React.useState('All');
 
   const images = {
@@ -75,7 +85,7 @@ function Home({navigation}) {
             source={require("../../assets/svg/brand/Type.svg")}
           />
         </View>
-        <Pressable style={styles.md24Layout} onPress={() => navigation.navigate('Search')}>
+        <Pressable style={styles.md24Layout} onPress={() => goSearch()}>
           {/*<Image
             style={[styles.md24SearchChild, styles.image5IconLayout]}
             contentFit="cover"
@@ -87,7 +97,7 @@ function Home({navigation}) {
           <Image
             style={styles.icon}
             contentFit="cover"
-            source={require("../assets/notifications-unread.png")}
+            source={require("../../assets/svg/icon/notification_new.svg")}
           />
         </Pressable>
       </View>
@@ -97,7 +107,7 @@ function Home({navigation}) {
           <Image
             style={styles.lg33Layout}
             contentFit="cover"
-            source={require("../assets/home-fill.png")}
+            source={require("../../assets/svg/icon/homeFill.svg")}
           />
           <Text style={[styles.home2, styles.tagTypo]}>Home</Text>
         </View>
@@ -105,7 +115,7 @@ function Home({navigation}) {
           <Image
             style={styles.lg32Layout}
             contentFit="cover"
-            source={require("../assets/message-line.png")}
+            source={require("../../assets/svg/icon/messageLine.svg")}
           />
           <Text style={[styles.home1, styles.tagTypo]}>Message</Text>
         </View>
@@ -113,7 +123,7 @@ function Home({navigation}) {
           <Image
             style={[styles.xl48AddChild, styles.textPosition]}
             contentFit="cover"
-            source={require("../assets/Add.png")} //ellispe 17
+            source={require("../../assets/svg/icon/Add.svg")} //ellispe 17
           />
         </View>
         <View style={[styles.lg32BookLineParent, styles.bookItemSpaceBlock]}>
@@ -121,7 +131,7 @@ function Home({navigation}) {
             style={styles.lg33Layout}
             //contentFit="cover"
             resizeMode="contain"
-            source={require("../assets/book-line.png")}
+            source={require("../../assets/svg/icon/bookLine.svg")}
           />
           <Text style={[styles.home2, styles.tagTypo]}>My Books</Text>
         </View>
