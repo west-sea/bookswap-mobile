@@ -2,29 +2,41 @@ import * as React from "react";
 import { Image, ScrollView, StyleSheet, View, Text, Pressable, Dimensions } from "react-native";
 import { Padding, FontFamily, Border, FontSize, Color } from "../../GlobalStyles";
 import { router, useLocalSearchParams } from "expo-router";
+import NavigationBar from "../../components/NavigationBar";
+import Title from "../../assets/svg/brand/Type.svg";
+//import HomeIcon from "../../assets/svg/icon/welcoming-emojis.svg";
 //import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
 function Home() {
-    const goSearch = () => {
+    const handlePress = (path) => {
         router.push({
-            pathname: 'home/search.js',
+            pathname: path,
             params: {
-                //img,
-                //email,
-                //name,
+              action
             },
         });
+    };
+
+    const goMessage = () => {
+      router.push({
+          pathname: 'home/home',
+          params: {
+              //img,
+              //email,
+              //name,
+          },
+      });
     };
 
   const [activeTab, setActiveTab] = React.useState('All');
 
   const images = {
-    image5: require("../../assets/svg/book/life.svg"),
-    image6: require("../../assets/svg/book/poem.svg"),
-    image4: require("../../assets/svg/book/small.svg"),
+    image5: require("../../assets/png/book/book=a little life.png"),
+    image6: require("../../assets/png/book/poem.png"),
+    image4: require("../../assets/png/book/book=small things.png"),
     //sm18Cancel: require("../assets/sm18--cancel.png")
   };
 
@@ -78,14 +90,9 @@ function Home() {
       </View>
       <View style={[styles.bar, styles.barPosition]}>
         <View style={styles.logoTypeWrapper}>
-          <Image
-            style={styles.logoType}
-            //contentFit="cover"
-            resizeMode="contain"
-            source={require("../../assets/svg/brand/Type.svg")}
-          />
+          <Title/>
         </View>
-        <Pressable style={styles.md24Layout} onPress={() => goSearch()}>
+        <Pressable style={styles.md24Layout} onPress={() => handlePress('home/search')}>
           {/*<Image
             style={[styles.md24SearchChild, styles.image5IconLayout]}
             contentFit="cover"
@@ -93,7 +100,7 @@ function Home() {
         />*/}
           <View style={styles.md24SearchItem} />
         </Pressable>
-        <Pressable style={styles.md24Layout} onPress={() => navigation.navigate('HomeNotification')}>
+        <Pressable style={styles.md24Layout} onPress={() => handlePress('home/homeNotification')}>
           <Image
             style={styles.icon}
             contentFit="cover"
@@ -101,48 +108,7 @@ function Home() {
           />
         </Pressable>
       </View>
-      <View style={[styles.navigation, styles.barPosition]}>
-        <View style={[styles.blurBg, styles.textPosition]} />
-        <View style={[styles.navigationItem, styles.bookItemSpaceBlock]}>
-          <Image
-            style={styles.lg33Layout}
-            contentFit="cover"
-            source={require("../../assets/svg/icon/homeFill.svg")}
-          />
-          <Text style={[styles.home2, styles.tagTypo]}>Home</Text>
-        </View>
-        <View style={[styles.lg32MessageLineParent, styles.bookItemSpaceBlock]}>
-          <Image
-            style={styles.lg32Layout}
-            contentFit="cover"
-            source={require("../../assets/svg/icon/messageLine.svg")}
-          />
-          <Text style={[styles.home1, styles.tagTypo]}>Message</Text>
-        </View>
-        <View style={styles.xl48Add}>
-          <Image
-            style={[styles.xl48AddChild, styles.textPosition]}
-            contentFit="cover"
-            source={require("../../assets/svg/icon/Add.svg")} //ellispe 17
-          />
-        </View>
-        <View style={[styles.lg32BookLineParent, styles.bookItemSpaceBlock]}>
-          <Image
-            style={styles.lg33Layout}
-            //contentFit="cover"
-            resizeMode="contain"
-            source={require("../../assets/svg/icon/bookLine.svg")}
-          />
-          <Text style={[styles.home2, styles.tagTypo]}>My Books</Text>
-        </View>
-        <View style={[styles.lg32ProfileParent, styles.bookItemSpaceBlock]}>
-          <View style={[styles.lg32Profile, styles.lg32Layout]}>
-            <View style={styles.circle} />
-            <Text style={[styles.text, styles.textPosition]}>🌈</Text>
-          </View>
-          <Text style={[styles.home1, styles.tagTypo]}>Profile</Text>
-        </View>
-      </View>
+      <NavigationBar action="home"/>
     </View>
   );
 };
@@ -549,7 +515,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     width: 360,
     overflow: "hidden",
-    backgroundColor: Color.containerWhite
+    backgroundColor: "FFF"
   },
   home: {
     height: 640,

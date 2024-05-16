@@ -17,7 +17,7 @@ export default function InputSearch() {
     <View style={[styles.input4, styles.inputBorder]}>
       <Text style={[styles.input1, styles.tag2Typo]}>input</Text>
     </View>
-  </View>
+    </View>
   )
 }
 
@@ -79,7 +79,6 @@ const styles = StyleSheet.create({
     
     
 });
-
 
 
 
