@@ -3,6 +3,7 @@
 import { Image, StyleSheet, View, Text ,TextInput, ScrollView, Pressable } from "react-native";
 import { Padding, FontFamily, FontSize, Color, Border } from "../../GlobalStyles";
 import { router, useLocalSearchParams } from "expo-router";
+import LeftArrow from "../../assets/svg/icon/arrow_left.svg"
 
 const images = {
     image5: require("../../assets/svg/book/life.svg"),
@@ -37,11 +38,7 @@ const images = {
       style={[styles.md24ArrowLeft, styles.md24Layout]}
       onPress={() => handlePress()}
     >
-      <Image
-        style={styles.icon}
-        contentFit="cover"
-        source={require("../../assets/svg/icon/arrow_left.svg")}
-      />
+    <LeftArrow/>
     </Pressable>
     <View style={[styles.input4, styles.inputBorder]}>
       <TextInput style={[styles.input1, styles.tag2Typo]}>input</TextInput>
@@ -52,7 +49,7 @@ const images = {
 
 const styles = StyleSheet.create({
     typesearch: {
-        top: 594,
+        top: 20,
     },
     typetitlePosition: {
         paddingRight: Padding.p_mini,

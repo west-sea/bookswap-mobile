@@ -1,11 +1,10 @@
-import * as React from "react";
-import { Image, ScrollView, StyleSheet, View, Text, Pressable, Dimensions } from "react-native";
+import React from "react";
+import { ScrollView, StyleSheet, View, Text, Pressable, Dimensions, Image } from "react-native";
 import { Padding, FontFamily, Border, FontSize, Color } from "../../GlobalStyles";
-import { router, useLocalSearchParams } from "expo-router";
+import { router } from "expo-router";
 import NavigationBar from "../../components/NavigationBar";
 import Title from "../../assets/svg/brand/Type.svg";
-//import HomeIcon from "../../assets/svg/icon/welcoming-emojis.svg";
-//import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import BookList from "../../components/book/BooklistItem"; // Adjust the path if needed
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -15,7 +14,7 @@ function Home() {
         router.push({
             pathname: path,
             params: {
-              action
+              //action
             },
         });
     };
@@ -23,11 +22,6 @@ function Home() {
     const goMessage = () => {
       router.push({
           pathname: 'home/home',
-          params: {
-              //img,
-              //email,
-              //name,
-          },
       });
     };
 
@@ -37,7 +31,6 @@ function Home() {
     image5: require("../../assets/png/book/book=a little life.png"),
     image6: require("../../assets/png/book/poem.png"),
     image4: require("../../assets/png/book/book=small things.png"),
-    //sm18Cancel: require("../assets/sm18--cancel.png")
   };
 
   const books = [
@@ -53,28 +46,8 @@ function Home() {
 
   return (
     <View style={styles.home}>
-      <ScrollView style={[styles.scrollContainer, {paddingTop: 120, paddingBottom: 180}]}
-      //contentContainerStyle={minHeight = screenHeight*0.3}
-      >
-        {filteredBooks.map((book, index) => (
-          <View key={index} style={styles.bookItem}>
-            <View style={styles.bookImg}>
-              <Image
-                style={[styles.image5Icon, styles.image5IconLayout]}
-                contentFit="cover"
-                source={images[book.image]}
-              />
-              <View style={[styles.bookImgChild, styles.image5IconPosition]} />
-            </View>
-            <View style={styles.frameParent}>
-              <View style={styles.titleParent}>
-                <Text style={styles.title}>{book.title}</Text>
-                <Text style={[styles.author, styles.textTypo]}>{book.author}</Text>
-                <Text style={[styles.novel, styles.textTypo]}>{book.genre}</Text>
-              </View>
-            </View>
-          </View>
-        ))}
+      <ScrollView style={[styles.scrollContainer, {paddingTop: 120, paddingBottom: 180}]}>
+        <BookList filteredBooks={filteredBooks} images={images} />
       </ScrollView>
       <View style={[styles.tabGroupHomeWrapper, styles.barPosition]}>
         <View style={styles.tabGroupHome}>
@@ -93,18 +66,19 @@ function Home() {
           <Title/>
         </View>
         <Pressable style={styles.md24Layout} onPress={() => handlePress('home/search')}>
-          {/*<Image
-            style={[styles.md24SearchChild, styles.image5IconLayout]}
+        <Image
+            style={styles.icon}
+            resizeMode="contain"
             contentFit="cover"
-            source={require("../assets/ellipse-2.png")} // ellipse-17
-        />*/}
-          <View style={styles.md24SearchItem} />
+            source={require("../../assets/png/icon/search.png")}
+          />
         </Pressable>
         <Pressable style={styles.md24Layout} onPress={() => handlePress('home/homeNotification')}>
           <Image
             style={styles.icon}
+            resizeMode="contain"
             contentFit="cover"
-            source={require("../../assets/svg/icon/notification_new.svg")}
+            source={require("../../assets/png/icon/noticeFill.png")}
           />
         </Pressable>
       </View>
