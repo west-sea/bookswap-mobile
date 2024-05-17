@@ -4,7 +4,7 @@ import { useStorageState } from "../hooks/useStorageState";
 const AuthContext = React.createContext({
   signIn: () => null,
   signOut: () => null,
-  session: null,
+  token: null,
   isLoading: false,
 });
 
@@ -32,7 +32,7 @@ export function SessionProvider(props) {
           // Perform sign-out logic here
           setSession(null);
         },
-        session,
+        token: session,
         isLoading,
       }}
     >

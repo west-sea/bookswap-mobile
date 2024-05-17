@@ -1,79 +1,173 @@
-import React from "react";
-import { ScrollView, StyleSheet, View, Text, Pressable, Dimensions, Image } from "react-native";
-import { Padding, FontFamily, Border, FontSize, Color } from "../../GlobalStyles";
+import React, { useEffect, useState } from "react";
+import {
+  ScrollView,
+  StyleSheet,
+  View,
+  Text,
+  Pressable,
+  Dimensions,
+  Image,
+} from "react-native";
+import {
+  Padding,
+  FontFamily,
+  Border,
+  FontSize,
+  Color,
+} from "../../GlobalStyles";
 import { router } from "expo-router";
 import NavigationBar from "../../components/NavigationBar";
 import Title from "../../assets/svg/brand/Type.svg";
 import BookList from "../../components/book/BooklistItem"; // Adjust the path if needed
+import api from "../../api";
+import { getErrorMessage } from "../../api/error-codes";
+import { useSession } from "../../contexts/auth.ctx";
 
-const screenWidth = Dimensions.get('window').width;
-const screenHeight = Dimensions.get('window').height;
+const screenWidth = Dimensions.get("window").width;
+const screenHeight = Dimensions.get("window").height;
 
 function Home() {
-    const handlePress = (path) => {
-        router.push({
-            pathname: path,
-            params: {
-              //action
-            },
-        });
-    };
-
-    const goMessage = () => {
-      router.push({
-          pathname: 'home/home',
-      });
-    };
-
-  const [activeTab, setActiveTab] = React.useState('All');
-
   const images = {
     image5: require("../../assets/png/book/book=a little life.png"),
     image6: require("../../assets/png/book/poem.png"),
     image4: require("../../assets/png/book/book=small things.png"),
   };
 
-  const books = [
-    { title: "A Little Life", author: "Yanagihara, Hanya", genre: "Novel", image: 'image5' },
-    { title: "A Little Life", author: "Yanagihara, Hanya", genre: "Novel", image: 'image5' },
-    { title: "A Little Life", author: "Yanagihara, Hanya", genre: "Novel", image: 'image5' },
-    { title: "Poems", author: "Louise Gluck", genre: "Poetry", image: 'image6' },
-    { title: "Small Things Like These", author: "Claire Keegan", genre: "Novel", image: 'image4' },
-    { title: "Small Things Like These", author: "Claire Keegan", genre: "Novel", image: 'image4' }
-  ];
+  const [books, setBooks] = useState([
+    {
+      title: "A Little Life - test",
+      author: "Yanagihara, Hanya",
+      genre: "Novel",
+      image: "image5",
+    },
+    {
+      title: "A Little Life",
+      author: "Yanagihara, Hanya",
+      genre: "Novel",
+      image: "image5",
+    },
+    {
+      title: "A Little Life",
+      author: "Yanagihara, Hanya",
+      genre: "Novel",
+      image: "image5",
+    },
+    {
+      title: "Poems",
+      author: "Louise Gluck",
+      genre: "Poetry",
+      image: "image6",
+    },
+    {
+      title: "Small Things Like These",
+      author: "Claire Keegan",
+      genre: "Novel",
+      image: "image4",
+    },
+    {
+      title: "Small Things Like These",
+      author: "Claire Keegan",
+      genre: "Novel",
+      image: "image4",
+    },
+  ]);
 
-  const filteredBooks = activeTab === 'All' ? books : books.filter(book => book.genre === activeTab);
+  const session = useSession();
+  useEffect(() => {
+    if (session.token === null) {
+      router.push({
+        pathname: "/auth",
+      });
+      return;
+    }
+    // Fetch data from API
+    api.books.getFeed(session.token).then((data) => {
+      if (data?.code) {
+        // Handle error
+        const message = getErrorMessage(data.code);
+        alert(message);
+        return;
+      }
+      // setBooks(data); // Uncomment this line when you have the data
+    });
+  }, []);
+
+  const handlePress = (path) => {
+    router.push({
+      pathname: path,
+      params: {
+        //action
+      },
+    });
+  };
+
+  const goMessage = () => {
+    router.push({
+      pathname: "home/home",
+    });
+  };
+
+  const [activeTab, setActiveTab] = React.useState("All");
+
+  const filteredBooks =
+    activeTab === "All"
+      ? books || []
+      : books?.filter((book) => book.genre === activeTab) || [];
 
   return (
     <View style={styles.home}>
-      <ScrollView style={[styles.scrollContainer, {paddingTop: 120, paddingBottom: 180}]}>
+      <ScrollView
+        style={[
+          styles.scrollContainer,
+          { paddingTop: 120, paddingBottom: 180 },
+        ]}
+      >
         <BookList filteredBooks={filteredBooks} images={images} />
       </ScrollView>
       <View style={[styles.tabGroupHomeWrapper, styles.barPosition]}>
         <View style={styles.tabGroupHome}>
-          {['All', 'Major', 'Novel', 'Essay', 'Poetry', 'Hobby'].map((tab, idx) => (
-            <Pressable key={idx} onPress={() => setActiveTab(tab)}>
-              <View style={styles.tab}>
-                <Text style={[styles.tabTypo, activeTab === tab ? styles.activeTabText : styles.inactiveTabText]}>{tab}</Text>
-                {activeTab === tab && <View style={[styles.tabItem, styles.tabLayout]} />}
-              </View>
-            </Pressable>
-          ))}
+          {["All", "Major", "Novel", "Essay", "Poetry", "Hobby"].map(
+            (tab, idx) => (
+              <Pressable key={idx} onPress={() => setActiveTab(tab)}>
+                <View style={styles.tab}>
+                  <Text
+                    style={[
+                      styles.tabTypo,
+                      activeTab === tab
+                        ? styles.activeTabText
+                        : styles.inactiveTabText,
+                    ]}
+                  >
+                    {tab}
+                  </Text>
+                  {activeTab === tab && (
+                    <View style={[styles.tabItem, styles.tabLayout]} />
+                  )}
+                </View>
+              </Pressable>
+            )
+          )}
         </View>
       </View>
       <View style={[styles.bar, styles.barPosition]}>
         <View style={styles.logoTypeWrapper}>
-          <Title/>
+          <Title />
         </View>
-        <Pressable style={styles.md24Layout} onPress={() => handlePress('home/search')}>
-        <Image
+        <Pressable
+          style={styles.md24Layout}
+          onPress={() => handlePress("home/search")}
+        >
+          <Image
             style={styles.icon}
             resizeMode="contain"
             contentFit="cover"
             source={require("../../assets/png/icon/search.png")}
           />
         </Pressable>
-        <Pressable style={styles.md24Layout} onPress={() => handlePress('home/homeNotification')}>
+        <Pressable
+          style={styles.md24Layout}
+          onPress={() => handlePress("home/homeNotification")}
+        >
           <Image
             style={styles.icon}
             resizeMode="contain"
@@ -82,17 +176,17 @@ function Home() {
           />
         </Pressable>
       </View>
-      <NavigationBar action="home"/>
+      <NavigationBar action="home" />
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   activeTabText: {
-    color: '#0C0E12'  
+    color: "#0C0E12",
   },
   inactiveTabText: {
-    color: '#6E7A9F'  
+    color: "#6E7A9F",
   },
   bookItemSpaceBlock: {
     paddingHorizontal: 0,
@@ -190,16 +284,16 @@ const styles = StyleSheet.create({
   lg32Layout: {
     height: 32,
     width: 32,
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    overflow: 'hidden',
+    justifyContent: "center",
+    alignItems: "center",
+    overflow: "hidden",
   },
   lg33Layout: {
     height: 28,
     width: 28,
-    justifyContent: 'center', // 이미지를 중앙에 배치
-    alignItems: 'center', // 이미지를 중앙에 배치
-    overflow: 'hidden',
+    justifyContent: "center", // 이미지를 중앙에 배치
+    alignItems: "center", // 이미지를 중앙에 배치
+    overflow: "hidden",
   },
   image5Icon: {
     left: "0%",
@@ -489,11 +583,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     width: 360,
     overflow: "hidden",
-    backgroundColor: "FFF"
+    backgroundColor: "FFF",
   },
   home: {
     height: 640,
-    marginTop: screenHeight*0.03,
+    marginTop: screenHeight * 0.03,
     overflow: "hidden",
     width: "100%",
     flex: 1,
