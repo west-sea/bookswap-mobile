@@ -1,17 +1,22 @@
 import { Redirect, Slot } from "expo-router";
 import { useSession } from "../../contexts/auth.ctx";
 import Splash from "../../components/brand/Splash";
+import { SocketProvider } from "../../contexts/socket.ctx";
 
 export default function AppLayout() {
-  const { session, isLoading } = useSession();
+  const { token, isLoading } = useSession();
 
   if (isLoading) {
     return <Splash />;
   }
 
-  if (!session) {
+  if (!token) {
     return <Redirect href="/auth" />;
   }
 
-  return <Slot />;
+  return (
+    <SocketProvider token={token}>
+      <Slot />
+    </SocketProvider>
+  );
 }

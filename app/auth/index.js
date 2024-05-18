@@ -61,7 +61,6 @@ export default function Page() {
     if (result.error) {
       // TODO: Handle error
       const error = result.error;
-      console.log(error);
       const errorCode = error.code;
       switch (errorCode) {
         case statusCodes.SIGN_IN_CANCELLED:
