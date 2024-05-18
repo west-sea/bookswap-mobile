@@ -1,5 +1,6 @@
 import { Pressable, View, Text, StyleSheet } from "react-native";
 import GoogleIcon from "../../assets/svg/GoogleIcon.svg";
+import i18n from "../../locales/i18n";
 
 export default function GoogleSignInButton({ onPress, isLoading = false }) {
   return (
@@ -17,7 +18,7 @@ export default function GoogleSignInButton({ onPress, isLoading = false }) {
         <View style={styles.buttonIcon}>
           <GoogleIcon />
         </View>
-        <Text style={styles.buttonLabel}>Sign in with Google</Text>
+        <Text style={styles.buttonLabel}>{i18n.t('auth.googleSignIn')}</Text>
       </Pressable>
     </View>
   );
