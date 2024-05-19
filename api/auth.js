@@ -19,13 +19,7 @@ async function login(idToken) {
   }
 }
 
-async function board({ userId, email, nickname, preferredGenres, avatar }) {
-  const body = new FormData();
-  body.append("userId", userId);
-  body.append("email", email);
-  body.append("nickname", nickname);
-  body.append("preferredGenres", JSON.stringify(preferredGenres));
-  body.append("avatar", avatar);
+async function board(body) {
   const data = await fetchApi("/auth/board", "POST", {
     body,
     headers: {

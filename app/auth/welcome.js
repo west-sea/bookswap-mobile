@@ -3,6 +3,7 @@ import WelcomingEmojis from "../../assets/svg/auth/welcoming-emojis.svg";
 import { useEffect } from "react";
 import GradientBackground from "../../components/brand/GradientBackground";
 import { router, useLocalSearchParams } from "expo-router";
+import i18n from "../../locales/i18n";
 
 export default function WelcomePage() {
   const params = useLocalSearchParams();
@@ -17,7 +18,7 @@ export default function WelcomePage() {
     <View style={styles.container}>
       <GradientBackground />
       <WelcomingEmojis />
-      <Text style={styles.text}>Welcome to BookSwap</Text>
+      <Text style={styles.text}>{i18n.t('welcome')}</Text>
       <Text style={styles.name}>{params.name || "Booklover"}!</Text>
     </View>
   );

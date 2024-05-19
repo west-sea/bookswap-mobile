@@ -11,6 +11,7 @@ import { useGoogleAuth } from "../../hooks/useGoogleAuth";
 import GoogleSignInButton from "../../components/buttons/GoogleSignInButton";
 import api from "../../api";
 import { getErrorMessage } from "../../api/error-codes";
+import { showError } from "../../components/Toaster";
 
 export default function Page() {
   const [isSigningIn, setIsSigningIn] = useState(false);
@@ -28,7 +29,7 @@ export default function Page() {
       if (!data || data?.code) {
         // IF error, handle error
         const message = getErrorMessage(data.code);
-        alert(message);
+        showError(message);
         setIsSigningIn(false);
         return;
       }
@@ -45,7 +46,7 @@ export default function Page() {
       } else {
         // IF successful, store token in session and go to welcome page
         signIn(data.token);
-        router.push({
+        router.replace({
           pathname: "/auth/welcome",
           params: {
             name,
@@ -55,7 +56,7 @@ export default function Page() {
       setIsSigningIn(false);
     }
     if (!result) {
-      alert("Something went wrong. Please try again.");
+      showError(i18n.t("errors.UNKNOWN_ERROR"));
       setIsSigningIn(false);
     }
     if (result.error) {
@@ -64,16 +65,16 @@ export default function Page() {
       const errorCode = error.code;
       switch (errorCode) {
         case statusCodes.SIGN_IN_CANCELLED:
-          alert("You cancelled the sign in process.");
+          showError(i18n.t("errors.SIGN_IN_CANCELLED"));
           break;
         case statusCodes.IN_PROGRESS:
-          alert("Sign in is already in progress. Please, be patient.");
+          showError(i18n.t("errors.SIGN_IN_IN_PROGRESS"));
           break;
         case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
-          alert("Play Service not available.");
+          showError(i18n.t("errors.SIGN_IN_NOT_SUPPORTED"));
           break;
         default:
-          alert("Something went wrong. Please try again.");
+          showError(i18n.t("errors.SIGN_IN_ERROR"));
       }
       setIsSigningIn(false);
     }

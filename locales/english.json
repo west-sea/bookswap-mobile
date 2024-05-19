@@ -1,5 +1,56 @@
 {
   "auth": {
     "googleSignIn": "Sign in with Google"
+  },
+  "boarding": {
+    "welcome": "Welcome to BookSwap!",
+    "query": "Let me know about you.",
+    "avatar": "Choose an avatar",
+    "nickname": "What should I call you?",
+    "genre": "What is your favorite genre?",
+    "back": "Back",
+    "next": "Next",
+    "complete": "Complete",
+    "longPressToUpload": "Long press the avatar to upload an image next time.",
+    "avatarUploadCancel": "You didn't select any image."
+  },
+  "welcome": "Welcome to BookSwap",
+  "genres": {
+    "novel": "Novel",
+    "poetry": "Poetry",
+    "art": "Art",
+    "science": "Science",
+    "philosophy": "Philosophy",
+    "history": "History",
+    "biography": "Biography",
+    "religion": "Religion",
+    "cooking": "Cooking",
+    "health": "Health"
+  },
+  "errors": {
+    "SIGN_IN_CANCELLED": "You cancelled the sign in process.",
+    "SIGN_IN_IN_PROGRESS": "Sign in is already in progress. Please, be patient.",
+    "SIGN_IN_NOT_SUPPORTED": "Sign in is not supported in this device. Please, consider another option.",
+    "SIGN_IN_ERROR": "There was an error during the sign in process. Please try again later.",
+    "UNKNOWN_ERROR": "Please try again later.",
+    "SERVER_ERROR": "Our server had a little problem. Please try again later.",
+    "UNAUTHORIZED": "You need to be authenticated to perform this action.",
+    "FORBIDDEN": "You are not allowed to perform this action.",
+    "INVALID_TOKEN": "There's something wrong with your data.",
+    "INVALID_USER_ID": "There's something wrong with your data",
+    "INVALID_EMAIL": "The email you provided is invalid. Please provide a valid email.",
+    "INVALID_NAME": "The name you provided is invalid. Please provide a valid name.",
+    "INVALID_NICKNAME": "The nickname you provided is invalid. Please provide a valid nickname.",
+    "INVALID_GENRE": "The genre you provided is invalid. Please provide a valid genre.",
+    "INVALID_AVATAR": "The avatar you provided is invalid. Please provide a valid avatar.",
+    "FILE_MISSING": "There's something wrong with the file you provided.",
+    "INVALID_QUERY": "Your query does not seem valid. Please provide a valid query.",
+    "INVALID_TITLE": "The title you provided is invalid. Please provide a valid title.",
+    "INVALID_AUTHOR": "The author you provided is invalid. Please provide a valid author.",
+    "INVALID_VISIBILITY": "You've chosen an invalid visibility option. Please provide a valid visibility option.",
+    "INVALID_EXCEPTION": "You've chosen someone troublesome. Please provide a valid exception.",
+    "INVALID_ID": "There's something wrong with the data you are interacting with.",
+    "FILE_UPLOAD_ERROR": "We couldn't upload your file. Please try again later.",
+    "USER_NOT_FOUND": "We couldn't find the user you are looking for."
   }
 }

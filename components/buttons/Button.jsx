@@ -5,12 +5,18 @@ export default function Button({
   onPress,
   textColor = "#fff",
   bgColor = "#40B250",
+  disabled = false,
 }) {
   return (
     <View style={styles.buttonContainer}>
       <Pressable
+        disabled={disabled}
         onPress={onPress}
-        style={[styles.button, { backgroundColor: bgColor }]}
+        style={[
+          styles.button,
+          { backgroundColor: bgColor },
+          disabled && styles.disabled,
+        ]}
       >
         <Text style={[styles.buttonLabel, { color: textColor }]}>{label}</Text>
       </Pressable>
@@ -40,5 +46,8 @@ const styles = StyleSheet.create({
   },
   buttonLabel: {
     fontSize: 18,
+  },
+  disabled: {
+    opacity: 0.5,
   },
 });
