@@ -1,9 +1,6 @@
 import { View, StyleSheet, Pressable, Image } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import PlaceholderAvatar from "../../assets/svg/onboard/ProfilePlaceholder.svg";
-import DefaultAvatar1 from "../../assets/svg/onboard/Profile1.svg";
-import DefaultAvatar2 from "../../assets/svg/onboard/Profile2.svg";
-import DefaultAvatar3 from "../../assets/svg/onboard/Profile3.svg";
 import { showInfo } from "../Toaster";
 import i18n from "../../locales/i18n";
 import Avatar from '../users/Avatar';
@@ -11,17 +8,14 @@ import Avatar from '../users/Avatar';
 export const defaultAvatars = [
   {
     id: 1,
-    Component: DefaultAvatar1,
     filename: "Profile1.png",
   },
   {
     id: 2,
-    Component: DefaultAvatar2,
     filename: "Profile2.png",
   },
   {
     id: 3,
-    Component: DefaultAvatar3,
     filename: "Profile3.png",
   },
 ];
@@ -69,7 +63,6 @@ export default function ImageSelector({
           onPress={() => onImageSelect(avatar.id)}
         >
           <Avatar filename={avatar.filename} />
-          {/* <avatar.Component /> */}
         </Pressable>
       ))}
       <Pressable
