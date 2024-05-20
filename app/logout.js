@@ -1,5 +1,5 @@
-import { Button, StyleSheet, View, Text } from "react-native";
-import { useSession } from "../../contexts/auth.ctx";
+import { Button, StyleSheet, View } from "react-native";
+import { useSession } from "../contexts/auth.ctx";
 import Toast from "react-native-toast-message";
 
 export default function Page() {
