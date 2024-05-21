@@ -14,6 +14,7 @@ import {
 import { getAvatarUrl } from "../../../components/users/Avatar";
 import { FontAwesome5, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import dayjs from "dayjs";
+import { useTranslation } from "react-i18next";
 
 export default function ChatPage() {
   const mockChat = {
@@ -81,6 +82,7 @@ export default function ChatPage() {
   const [messages, setMessages] = useState(mockMessages);
   const [text, setText] = useState("");
   const flatlist = useRef(null);
+  const { i18n } = useTranslation();
 
   useEffect(() => {
     console.log(`Exchange ID: `, params.exchangeId);
@@ -208,7 +210,7 @@ export default function ChatPage() {
               }}
             >
               <Text style={{ color: "white", fontWeight: "600", fontSize: 16 }}>
-                Complete exchange
+                {i18n.t("chat.swap")}
               </Text>
             </TouchableOpacity>
           </View>
@@ -246,7 +248,7 @@ export default function ChatPage() {
       >
         {/* Input */}
         <TextInput
-          placeholder="Write a message..."
+          placeholder={i18n.t("chat.placeholder")}
           style={{
             borderWidth: 1,
             borderRadius: 20,
@@ -280,14 +282,16 @@ export default function ChatPage() {
 }
 
 function EmptyChat() {
+  const { i18n } = useTranslation();
+
   return (
     <View style={{ alignItems: "center", gap: 8, paddingVertical: 16 }}>
       <MaterialIcons name="emoji-people" size={36} color="black" />
       <Text style={{ fontWeight: "bold", fontSize: 18 }}>
-        No messages yet...
+        {i18n.t("chat.empty")};
       </Text>
       <Text style={{ fontSize: 16, color: "#6E7A9F" }}>
-        Send a quick message to start chatting!
+        {i18n.t("chat.placeholder")}
       </Text>
     </View>
   );

@@ -1,11 +1,12 @@
 import { StyleSheet, Text, View, Pressable } from "react-native";
-import i18n from "../../locales/i18n";
 import { genres } from "../../api/constants";
+import { useTranslation } from "react-i18next";
 
 export default function GenreSelector({
   selectedGenres,
   toggleGenreSelection,
 }) {
+  const { i18n } = useTranslation();
   return (
     <View style={styles.container}>
       {genres.map((genre) => (

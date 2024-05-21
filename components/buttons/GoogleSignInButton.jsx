@@ -1,8 +1,10 @@
 import { Pressable, View, Text, StyleSheet } from "react-native";
 import GoogleIcon from "../../assets/svg/GoogleIcon.svg";
-import i18n from "../../locales/i18n";
+import { useTranslation } from "react-i18next";
 
 export default function GoogleSignInButton({ onPress, isLoading = false }) {
+  const { i18n } = useTranslation();
+
   return (
     <View style={styles.buttonContainer}>
       <Pressable

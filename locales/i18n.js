@@ -1,16 +1,28 @@
+import i18n from "i18next";
+import { initReactI18next } from "react-i18next";
+import english from "./english.json";
+import korean from "./korean.json";
 import { getLocales } from "expo-localization";
-import { I18n } from "i18n-js";
-import englishLocales from "./english.json";
-import koreanLocales from "./korean.json";
 
-const i18n = new I18n({
-  en: englishLocales,
-  kr: koreanLocales,
-});
+// Dayjs plugins
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+dayjs.extend(relativeTime);
 
-i18n.enableFallback = true;
+const resources = {
+  en: { translation: english },
+  kr: { translation: korean },
+};
 
-i18n.locale = getLocales()[0].languageCode;
-// i18n.locale = "kr";
+i18n
+  .use(initReactI18next) // passes i18n down to react-i18next
+  .init({
+    resources,
+    lng: getLocales()[0].languageCode,
+    fallbackLng: "en",
+    interpolation: {
+      escapeValue: false, // react already safes from xss
+    },
+  });
 
 export default i18n;

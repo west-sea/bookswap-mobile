@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
 import { statusCodes } from "@react-native-google-signin/google-signin";
 import GradientBackground from "../../components/brand/GradientBackground";
 import Logo from "../../components/brand/Logo";
@@ -12,11 +12,22 @@ import GoogleSignInButton from "../../components/buttons/GoogleSignInButton";
 import api from "../../api";
 import { getErrorMessage } from "../../api/error-codes";
 import { showError } from "../../components/Toaster";
+import { useTranslation } from "react-i18next";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function Page() {
   const [isSigningIn, setIsSigningIn] = useState(false);
   const { signIn } = useSession();
   const signInWithGoogle = useGoogleAuth();
+  const { i18n } = useTranslation();
+
+  const switchLanguage = () => {
+    if (i18n.language === "en") {
+      i18n.changeLanguage("kr");
+    } else {
+      i18n.changeLanguage("en");
+    }
+  };
 
   const onGoogleAuth = async () => {
     setIsSigningIn(true);
@@ -28,7 +39,7 @@ export default function Page() {
       const data = await api.auth.login(idToken);
       if (!data || data?.code) {
         // IF error, handle error
-        const message = getErrorMessage(data.code);
+        const message = getErrorMessage(data.code, i18n);
         showError(message);
         setIsSigningIn(false);
         return;
@@ -98,6 +109,19 @@ export default function Page() {
         <View>
           <GoogleSignInButton onPress={onGoogleAuth} isLoading={isSigningIn} />
         </View>
+        <TouchableOpacity
+          onPress={switchLanguage}
+          style={{ flexDirection: "row", alignItems: "center", gap: 4 }}
+        >
+          <Ionicons name="language" size={24} color="white" />
+          <Text
+            style={{
+              color: "white",
+            }}
+          >
+            {i18n.t("auth.switchLanguage")}
+          </Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

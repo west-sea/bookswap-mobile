@@ -2,8 +2,8 @@ import { View, StyleSheet, Pressable, Image } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import PlaceholderAvatar from "../../assets/svg/onboard/ProfilePlaceholder.svg";
 import { showInfo } from "../Toaster";
-import i18n from "../../locales/i18n";
-import Avatar from '../users/Avatar';
+import Avatar from "../users/Avatar";
+import { useTranslation } from "react-i18next";
 
 export const defaultAvatars = [
   {
@@ -31,6 +31,7 @@ export default function ImageSelector({
   customAvatar,
   onCustomAvatarChange,
 }) {
+  const { i18n } = useTranslation();
   const handleUpload = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,

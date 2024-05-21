@@ -1,5 +1,94 @@
 {
   "auth": {
-    "googleSignIn": "구글로 로그인"
+    "googleSignIn": "Google로 로그인",
+    "switchLanguage": "언어 전환"
+  },
+  "boarding": {
+    "welcome": "BookSwap에 오신 것을 환영합니다!",
+    "query": "당신에 대해 알려주세요.",
+    "avatar": "아바타를 선택하세요",
+    "nickname": "널 뭐라고 불러야 될까?",
+    "genre": "당신이 가장 좋아하는 장르는 무엇입니까?",
+    "back": "뒤쪽에",
+    "next": "다음",
+    "complete": "완벽한",
+    "longPressToUpload": "다음에 이미지를 업로드하려면 아바타를 길게 누르세요.",
+    "avatarUploadCancel": "이미지를 선택하지 않았습니다."
+  },
+  "welcome": "BookSwap에 오신 것을 환영합니다.",
+  "tabs": {
+    "home": "집",
+    "message": "메시지",
+    "books": "내 책들",
+    "profile": "내 프로필"
+  },
+  "feed": {
+    "available": "요구",
+    "requested": "요청됨",
+    "reserved": "채팅으로 이동",
+    "empty": "현재 이용 가능한 책이 없습니다.",
+    "empty-feedback": "하나를 추가하시겠습니까?"
+  },
+  "chats": {
+    "empty": "아직 대화를 시작하지 않으셨습니다...",
+    "empty-feedback": "책을 요청하여 소유자와 채팅을 시작하세요."
+  },
+  "chat": {
+    "swap": "완전한 교환",
+    "empty": "아직 메시지가 없습니다...",
+    "empty-feedback": "채팅을 시작하려면 빠른 메시지를 보내세요!",
+    "placeholder": "메시지를 작성하세요..."
+  },
+  "profile": {
+    "edit": "편집하다",
+    "logout": "로그아웃",
+    "myExchanges": "내 요청",
+    "preferredGenres": "선호하는 장르",
+    "language": "언어 변경",
+    "about": "북스왑(BookSwap) 소개"
+  },
+  "about": {
+    "title": "우리의 도서 공유 플랫폼에 오신 것을 환영합니다!",
+    "description": "새로운 소프트웨어를 통해 KAIST의 독서 문화를 향상시키는 데 동참해 주셔서 감사합니다. ",
+    "team": "팀 스왑 스크립트 스쿼드"
+  },
+  "genres": {
+    "all": "모두",
+    "novel": "소설",
+    "poetry": "시",
+    "art": "미술",
+    "science": "과학",
+    "philosophy": "철학",
+    "history": "역사",
+    "biography": "전기",
+    "religion": "종교",
+    "cooking": "요리",
+    "health": "건강"
+  },
+  "errors": {
+    "SIGN_IN_CANCELLED": "로그인 프로세스를 취소했습니다.",
+    "SIGN_IN_IN_PROGRESS": "로그인이 이미 진행 중입니다. ",
+    "SIGN_IN_NOT_SUPPORTED": "이 기기에서는 로그인이 지원되지 않습니다. ",
+    "SIGN_IN_ERROR": "로그인 과정에서 오류가 발생했습니다. ",
+    "UNKNOWN_ERROR": "나중에 다시 시도 해주십시오.",
+    "SERVER_ERROR": "우리 서버에 약간의 문제가 있었습니다. ",
+    "UNAUTHORIZED": "이 작업을 수행하려면 인증을 받아야 합니다.",
+    "FORBIDDEN": "이 작업을 수행할 권한이 없습니다.",
+    "INVALID_TOKEN": "데이터에 문제가 있습니다.",
+    "INVALID_USER_ID": "데이터에 문제가 있습니다.",
+    "INVALID_EMAIL": "제공하신 이메일이 잘못되었습니다. ",
+    "INVALID_NAME": "제공한 이름이 잘못되었습니다. ",
+    "INVALID_NICKNAME": "제공한 닉네임이 잘못되었습니다. ",
+    "INVALID_GENRE": "제공한 장르가 잘못되었습니다. ",
+    "INVALID_AVATAR": "제공한 아바타가 잘못되었습니다. ",
+    "FILE_MISSING": "제공하신 파일에 문제가 있습니다.",
+    "INVALID_QUERY": "귀하의 쿼리가 유효하지 않은 것 같습니다. ",
+    "INVALID_TITLE": "제공한 제목이 잘못되었습니다. ",
+    "INVALID_AUTHOR": "제공한 작성자가 잘못되었습니다. ",
+    "INVALID_VISIBILITY": "잘못된 공개 상태 옵션을 선택했습니다. ",
+    "INVALID_EXCEPTION": "당신은 귀찮은 사람을 선택했습니다. ",
+    "INVALID_ID": "상호 작용하는 데이터에 문제가 있습니다.",
+    "FILE_UPLOAD_ERROR": "파일을 업로드할 수 없습니다. ",
+    "USER_NOT_FOUND": "귀하가 찾고 있는 사용자를 찾을 수 없습니다."
   }
 }

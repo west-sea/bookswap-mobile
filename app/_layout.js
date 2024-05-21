@@ -1,11 +1,13 @@
-import React from "react";
-import { Redirect, usePathname } from "expo-router";
+import React, { useEffect } from "react";
+import { Redirect, router, usePathname } from "expo-router";
 import { useSession } from "../contexts/auth.ctx";
 import Splash from "../components/brand/Splash";
 import { SocketProvider } from "../contexts/socket.ctx";
 import { Slot } from "expo-router";
 import { SessionProvider } from "../contexts/auth.ctx";
 import Toast from "react-native-toast-message";
+import "intl-pluralrules";
+import i18n from "../locales/i18n";
 
 export default function Root() {
   const pathname = usePathname();
@@ -25,15 +27,13 @@ export default function Root() {
 }
 
 function ProtectedLayout({ children }) {
-  const { token, isLoading } = useSession();
+  const { token } = useSession();
 
-  if (isLoading) {
-    return <Splash />;
-  }
-
-  if (!token) {
-    return <Redirect href="/auth" />;
-  }
+  useEffect(() => {
+    if (!token) {
+      router.replace("/auth");
+    }
+  }, [token]);
 
   return <SocketProvider token={token}>{children}</SocketProvider>;
 }

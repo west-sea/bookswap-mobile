@@ -7,12 +7,12 @@ import GenreSelector from "../../components/input/GenreSelector";
 import InputText from "../../components/input/InputText";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import i18n from "../../locales/i18n";
 import api from "../../api";
 import { getErrorMessage } from "../../api/error-codes";
 import { showError } from "../../components/Toaster";
 import FormData from "form-data";
 import { useSession } from "../../contexts/auth.ctx";
+import { useTranslation } from "react-i18next";
 
 export default function BoardingPage() {
   const params = useLocalSearchParams();
@@ -24,6 +24,7 @@ export default function BoardingPage() {
   const [customAvatar, setCustomAvatar] = useState(null);
   const [isGenreView, setIsGenreView] = useState(false);
   const { signIn } = useSession();
+  const i18n = useTranslation();
 
   const onNicknameChange = (nickname) => {
     setNickname(nickname ? nickname.trim() : "");
@@ -66,7 +67,7 @@ export default function BoardingPage() {
     // const result = { code: 0 };
     if (!result || result?.code || !result?.token) {
       // IF error, handle error
-      const message = getErrorMessage(result.code);
+      const message = getErrorMessage(result.code, i18n);
       showError(message);
       return;
     }

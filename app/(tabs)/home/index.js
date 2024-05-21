@@ -12,6 +12,7 @@ import {
 import { genres } from "../../../api/constants";
 import { getAvatarUrl } from "../../../components/users/Avatar";
 import { router } from "expo-router";
+import { useTranslation } from "react-i18next";
 
 export default function Tab() {
   const mockBooks = [
@@ -109,6 +110,7 @@ export default function Tab() {
   const [apiData, setApiData] = useState(mockBooks);
   const [books, setBooks] = useState([]);
   const [selectedGenres, setSelectedGenres] = useState([]);
+  const { i18n } = useTranslation();
 
   useEffect(() => {
     updateBooks();
@@ -173,14 +175,15 @@ export default function Tab() {
 }
 
 function NoBooksFound() {
+  const { i18n } = useTranslation();
   return (
     <View style={{ alignItems: "center", gap: 8, paddingVertical: 16 }}>
       <Octicons name="inbox" size={36} color="black" />
       <Text style={{ fontWeight: "bold", fontSize: 18 }}>
-        We are out of books for now...
+        {i18n.t("feed.empty")}
       </Text>
       <Text style={{ fontSize: 16, color: "#6E7A9F" }}>
-        Try searching or choosing other genres
+        {i18n.t("feed.empty-feedback")}
       </Text>
     </View>
   );
@@ -190,6 +193,7 @@ function BookItem({ book }) {
   const isAvailable = book.status === "AVAILABLE" && !book.exchangeId;
   const isRequested = book.status === "AVAILABLE" && book.exchangeId;
   const isReserved = book.status === "RESERVED" && book.exchangeId;
+  const i18n = useTranslation();
 
   const handleRequest = () => {
     console.log("Requesting book...");
@@ -235,7 +239,7 @@ function BookItem({ book }) {
         {/* Status */}
         {isAvailable && (
           <ActionButton
-            label={"Request"}
+            label={i18n.t("feed.available")}
             bgColor={"#DEE1EB"}
             textColor={"black"}
             onPress={handleRequest}
@@ -243,7 +247,7 @@ function BookItem({ book }) {
         )}
         {isRequested && (
           <ActionButton
-            label={"Requested"}
+            label={i18n.t("feed.requested")}
             icon={<Ionicons name="checkmark-outline" size={14} color="white" />}
             bgColor={"#6E7A9F"}
             textColor={"white"}
@@ -252,7 +256,7 @@ function BookItem({ book }) {
         )}
         {isReserved && (
           <ActionButton
-            label={"Go to chat"}
+            label={i18n.t("feed.reserved")}
             icon={
               <Ionicons
                 name="chatbubble-ellipses-outline"
@@ -300,6 +304,11 @@ function ActionButton({
 }
 
 function Genre({ genre, isSelected, onSelect }) {
+  const { i18n } = useTranslation();
+  const genreText = i18n.t(`genres.${genre.toLowerCase()}`);
+
+  const capitalize = (text) => text.charAt(0).toUpperCase() + text.slice(1);
+
   return (
     <Pressable onPress={onSelect}>
       <Text
@@ -312,7 +321,7 @@ function Genre({ genre, isSelected, onSelect }) {
           borderRadius: 2,
         }}
       >
-        {genre.charAt(0).toUpperCase() + genre.slice(1)}
+        {capitalize(genreText)}
       </Text>
     </Pressable>
   );

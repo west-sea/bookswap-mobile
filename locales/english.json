@@ -1,6 +1,7 @@
 {
   "auth": {
-    "googleSignIn": "Sign in with Google"
+    "googleSignIn": "Sign in with Google",
+    "switchLanguage": "Switch language"
   },
   "boarding": {
     "welcome": "Welcome to BookSwap!",
@@ -15,7 +16,44 @@
     "avatarUploadCancel": "You didn't select any image."
   },
   "welcome": "Welcome to BookSwap",
+  "tabs": {
+    "home": "Home",
+    "message": "Message",
+    "books": "My Books",
+    "profile": "My Profile"
+  },
+  "feed": {
+    "available": "Request",
+    "requested": "Requested",
+    "reserved": "Go to chat",
+    "empty": "There are no books available at the moment.",
+    "empty-feedback": "Would you like to add one?"
+  },
+  "chats": {
+    "empty": "You haven't started any conversation yet...",
+    "empty-feedback": "Requst a book to start chatting with the owner"
+  },
+  "chat": {
+    "swap": "Complete exchange",
+    "empty": "No messages yet...",
+    "empty-feedback": "Send a quick message to start chatting!",
+    "placeholder": "Write a message..."
+  },
+  "profile": {
+    "edit": "Edit",
+    "logout": "Sign out",
+    "myExchanges": "My requests",
+    "preferredGenres": "Preferred Genres",
+    "language": "Change Language",
+    "about": "About BookSwap"
+  },
+  "about": {
+    "title": "Welcome to Our Book-Sharing Platform!",
+    "description": "Thank you for joining us in enhancing KAIST's reading culture through our new software. This platform aims to broaden your book options beyond the library's offerings, making it easier to find and share reading materials.",
+    "team": "Team Swap Script Squad"
+  },
   "genres": {
+    "all": "All",
     "novel": "Novel",
     "poetry": "Poetry",
     "art": "Art",

@@ -1,11 +1,10 @@
 import { Ionicons, Octicons } from "@expo/vector-icons";
 import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-dayjs.extend(relativeTime);
 import { useState } from "react";
 import { View, Text, FlatList, Image, TouchableOpacity } from "react-native";
-import Avatar, { getAvatarUrl } from "../../../components/users/Avatar";
+import { getAvatarUrl } from "../../../components/users/Avatar";
 import { router } from "expo-router";
+import { useTranslation } from "react-i18next";
 
 export default function Tab() {
   const mockChats = [
@@ -69,6 +68,7 @@ export default function Tab() {
       style={{
         justifyContent: "center",
         padding: 16,
+        flex: 1,
       }}
     >
       <FlatList
@@ -112,89 +112,86 @@ export function Chat({ chat }) {
   };
 
   return (
-    <TouchableOpacity onPress={handleChatSelection}>
+    <TouchableOpacity
+      onPress={handleChatSelection}
+      style={{
+        flexDirection: "row",
+        justifyContent: "flex-start",
+        gap: 4,
+        padding: 4,
+        backgroundColor: "white",
+        borderRadius: 10,
+      }}
+    >
+      {/* Chat cover */}
       <View
         style={{
           flexDirection: "row",
-          justifyContent: "flex-start",
-          gap: 4,
-          padding: 4,
-          backgroundColor: "white",
+          gap: 24,
+          padding: 8,
           borderRadius: 10,
+          backgroundColor: "#f2f3f7",
         }}
       >
-        {/* Chat cover */}
+        {/* First book pic */}
+        <Image
+          src={getAvatarUrl(firstBookCover)}
+          style={{ width: 60, height: 80, borderRadius: 3 }}
+        />
+        {/* Second book pic */}
+        <Image
+          src={getAvatarUrl(secondBookCover)}
+          style={{ width: 60, height: 80, borderRadius: 3 }}
+        />
+        {/* Owner pic */}
+        <Image
+          src={getAvatarUrl(firstOwnerCover)}
+          style={{
+            width: 30,
+            height: 30,
+            borderRadius: 50,
+            position: "absolute",
+            left: 50,
+            top: 30,
+          }}
+        />
+      </View>
+      {/* Chat info  */}
+      <View
+        style={{
+          justifyContent: "flex-start",
+          flexGrow: 1,
+          padding: 8,
+        }}
+      >
         <View
           style={{
             flexDirection: "row",
-            gap: 24,
-            padding: 8,
-            borderRadius: 10,
-            backgroundColor: "#f2f3f7",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 16,
           }}
         >
-          {/* First book pic */}
-          <Image
-            src={getAvatarUrl(firstBookCover)}
-            style={{ width: 60, height: 80, borderRadius: 3 }}
-          />
-          {/* Second book pic */}
-          <Image
-            src={getAvatarUrl(secondBookCover)}
-            style={{ width: 60, height: 80, borderRadius: 3 }}
-          />
-          {/* Owner pic */}
-          <Image
-            src={getAvatarUrl(firstOwnerCover)}
-            style={{
-              width: 30,
-              height: 30,
-              borderRadius: 50,
-              position: "absolute",
-              left: 50,
-              top: 30,
-            }}
-          />
+          {/* Owner name */}
+          <Text style={{ fontWeight: "bold", fontSize: 18 }}>{chatTitle}</Text>
+          {/* Last message date */}
+          <Text style={{ fontWeight: "400", fontSize: 14, color: "#6E7A9F" }}>
+            {latestMessageDate}
+          </Text>
         </View>
-        {/* Chat info  */}
         <View
           style={{
-            justifyContent: "flex-start",
-            flexGrow: 1,
-            padding: 8,
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
           }}
         >
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: 16,
-            }}
-          >
-            {/* Owner name */}
-            <Text style={{ fontWeight: "bold", fontSize: 18 }}>
-              {chatTitle}
-            </Text>
-            {/* Last message date */}
-            <Text style={{ fontWeight: "400", fontSize: 14, color: "#6E7A9F" }}>
-              {latestMessageDate}
-            </Text>
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            {/* Last message text */}
-            <Text style={{ fontWeight: isLastMessageSeen ? "normal" : "500" }}>
-              {chat.latestMessage.text}
-            </Text>
-            {/* Is Last message seen indicator */}
-            {!isLastMessageSeen && <UnseenIndicator />}
-          </View>
+          {/* Last message text */}
+          <Text style={{ fontWeight: isLastMessageSeen ? "normal" : "500" }}>
+            {chat.latestMessage.text}
+          </Text>
+          {/* Is Last message seen indicator */}
+          {!isLastMessageSeen && <UnseenIndicator />}
         </View>
       </View>
     </TouchableOpacity>
@@ -202,14 +199,15 @@ export function Chat({ chat }) {
 }
 
 function NoChatsFound() {
+  const i18n = useTranslation();
   return (
     <View style={{ alignItems: "center", gap: 8, paddingVertical: 16 }}>
       <Octicons name="inbox" size={36} color="black" />
       <Text style={{ fontWeight: "bold", fontSize: 18 }}>
-        You don't have any chats yet...
+        {i18n.t("chats.empty")}
       </Text>
       <Text style={{ fontSize: 16, color: "#6E7A9F" }}>
-        Requst a book to start chatting with the owner
+        {i18n.t("chats.empty-feedback")}
       </Text>
     </View>
   );

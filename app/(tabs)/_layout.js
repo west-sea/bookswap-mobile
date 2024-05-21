@@ -9,8 +9,11 @@ import { Tabs } from "expo-router";
 import HomeHeader from "../../components/home/HomeHeader";
 import BookSwapTitle from "../../assets/svg/brand/Type.svg";
 import { Pressable } from "react-native";
+import { useTranslation } from "react-i18next";
 
 export default function TabLayout() {
+  const { i18n } = useTranslation();
+
   return (
     <Tabs
       initialRouteName="home/index"
@@ -33,7 +36,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="home/index"
         options={{
-          tabBarLabel: "Home",
+          tabBarLabel: i18n.t("tabs.home"),
           headerTitleStyle: { display: "none" },
           headerLeft: () => <BookSwapTitle />,
           headerRight: HomeHeader,
@@ -72,8 +75,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="message/index"
         options={{
-          title: "Message",
-          tabBarLabel: "Message",
+          title: i18n.t("tabs.message"),
+          tabBarLabel: i18n.t("tabs.message"),
           headerTitleStyle: {
             fontWeight: "bold",
             fontSize: 24,
@@ -115,16 +118,13 @@ export default function TabLayout() {
               </Pressable>
             );
           },
-          // tabBarIcon: ({ color, size }) => (
-          //   <AntDesign name="pluscircle" size={36} color="green" />
-          // ),
         }}
       />
       <Tabs.Screen
         name="my-books"
         options={{
-          tabBarLabel: "My Books",
-          title: "My Bookshelf",
+          tabBarLabel: i18n.t('tabs.books'),
+          title: i18n.t('tabs.books'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons
               name={color === "black" ? "book" : "book-outline"}
@@ -135,9 +135,10 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="profile"
+        name="profile/index"
         options={{
-          title: "Profile",
+          title: i18n.t('tabs.profile'),
+          tabBarLabel: i18n.t('tabs.profile'),
           tabBarIcon: ({ color, size }) => (
             <FontAwesome5
               name={color === "black" ? "user-alt" : "user"}
@@ -145,6 +146,46 @@ export default function TabLayout() {
               color={color}
             />
           ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile/edit"
+        options={{
+          href: null,
+          tabBarStyle: {
+            display: "none",
+          },
+          headerShown: false,
+        }}
+      />
+      <Tabs.Screen
+        name="profile/edit-genres"
+        options={{
+          href: null,
+          tabBarStyle: {
+            display: "none",
+          },
+          headerShown: false,
+        }}
+      />
+      <Tabs.Screen
+        name="profile/my-exchanges"
+        options={{
+          href: null,
+          tabBarStyle: {
+            display: "none",
+          },
+          headerShown: false,
+        }}
+      />
+      <Tabs.Screen
+        name="profile/about"
+        options={{
+          href: null,
+          tabBarStyle: {
+            display: "none",
+          },
+          headerShown: false,
         }}
       />
     </Tabs>
