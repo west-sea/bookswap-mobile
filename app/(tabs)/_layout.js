@@ -5,36 +5,41 @@ import {
   MaterialCommunityIcons,
   FontAwesome5,
 } from "@expo/vector-icons";
-import { Tabs, Redirect } from "expo-router";
-import TabBar from "../../components/tabs/TabBar";
-import { useSession } from "../../contexts/auth.ctx";
-import Splash from "../../components/brand/Splash";
-import { SocketProvider } from "../../contexts/socket.ctx";
-
+import { Tabs } from "expo-router";
+import HomeHeader from "../../components/home/HomeHeader";
+import BookSwapTitle from "../../assets/svg/brand/Type.svg";
+import { Pressable } from "react-native";
 
 export default function TabLayout() {
-  const { token, isLoading } = useSession();
-
-  if (isLoading) {
-    return <Splash />;
-  }
-
-  if (!token) {
-    return <Redirect href="/auth" />;
-  }
-
   return (
-    
-    <SocketProvider token={token}>
     <Tabs
-      initialRouteName="home"
-      screenOptions={{ tabBarActiveTintColor: "black", header: () => <></> }}
-      tabBar={props => <TabBar {...props} />}
+      initialRouteName="home/index"
+      backBehavior="history"
+      screenOptions={{
+        tabBarActiveTintColor: "black",
+        headerTitleStyle: {
+          fontSize: 24,
+          fontWeight: "bold",
+        },
+        tabBarStyle: {
+          height: 60,
+          paddingVertical: 8,
+        },
+        tabBarLabelStyle: {
+          paddingBottom: 8,
+        },
+      }}
     >
       <Tabs.Screen
-        name="home"
+        name="home/index"
         options={{
-          title: "Home",
+          tabBarLabel: "Home",
+          headerTitleStyle: { display: "none" },
+          headerLeft: () => <BookSwapTitle />,
+          headerRight: HomeHeader,
+          headerRightContainerStyle: {
+            paddingRight: 4,
+          },
           tabBarIcon: ({ color, size }) => (
             <Ionicons
               name={color === "black" ? "home" : "home-outline"}
@@ -45,9 +50,34 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="message"
+        name="home/search"
+        options={{
+          href: null,
+          tabBarStyle: {
+            display: "none",
+          },
+          headerShown: false,
+        }}
+      />
+      <Tabs.Screen
+        name="home/notifications"
+        options={{
+          href: null,
+          tabBarStyle: {
+            display: "none",
+          },
+          headerShown: false,
+        }}
+      />
+      <Tabs.Screen
+        name="message/index"
         options={{
           title: "Message",
+          tabBarLabel: "Message",
+          headerTitleStyle: {
+            fontWeight: "bold",
+            fontSize: 24,
+          },
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name={color === "black" ? "message-text" : "message-text-outline"}
@@ -58,21 +88,43 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="message/chat"
+        options={{
+          href: null,
+          tabBarStyle: {
+            display: "none",
+          },
+          headerShown: false,
+        }}
+      />
+      <Tabs.Screen
         name="upload"
         options={{
-          tabBarIcon: ({ color, size }) => (
-            <AntDesign
-              name="pluscircle"
-              size={36}
-              color="green"
-            />
-          ),
+          tabBarStyle: { display: "none" },
+          tabBarButton: (props) => {
+            return (
+              <Pressable
+                {...props}
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                  paddingBottom: 4,
+                }}
+              >
+                <AntDesign name="pluscircle" size={36} color="green" />
+              </Pressable>
+            );
+          },
+          // tabBarIcon: ({ color, size }) => (
+          //   <AntDesign name="pluscircle" size={36} color="green" />
+          // ),
         }}
       />
       <Tabs.Screen
         name="my-books"
         options={{
-          title: "My Books",
+          tabBarLabel: "My Books",
+          title: "My Bookshelf",
           tabBarIcon: ({ color, size }) => (
             <Ionicons
               name={color === "black" ? "book" : "book-outline"}
@@ -96,6 +148,5 @@ export default function TabLayout() {
         }}
       />
     </Tabs>
-    </SocketProvider>
   );
 }

@@ -1,27 +1,27 @@
 import * as React from "react";
 import { ScrollView, StyleSheet, View, Text } from "react-native";
-import BookRequestItem from "../../components/book/BookRequestItem";
-import { Color, FontFamily, FontSize, Padding } from "../../GlobalStyles";
+import BookRequestItem from "../../../components/book/BookRequestItem";
+import { Color, FontFamily, FontSize, Padding } from "../../../GlobalStyles";
 
 const HomeNotification = () => {
   const requests = [
     {
-      bookImage: require("../../assets/png/book/book=justice.png"),
-      profileImage: require("../../assets/png/icon/profile.png"),
+      bookImage: require("../../../assets/png/book/book=justice.png"),
+      profileImage: require("../../../assets/png/icon/profile.png"),
       userName: "Healthy Boy",
       timeAgo: "19 min ago",
       requestMessage: "accepted your request."
     },
     {
-      bookImage: require("../../assets/png/book/book=crime.png"),
-      profileImage: require("../../assets/png/icon/profile.png"),
+      bookImage: require("../../../assets/png/book/book=crime.png"),
+      profileImage: require("../../../assets/png/icon/profile.png"),
       userName: "Pum King",
       timeAgo: "19 min ago",
       requestMessage: "accepted someone else's request."
     },
     {
-      bookImage: require("../../assets/png/book/poem.png"),
-      profileImage: require("../../assets/png/icon/profile.png"),
+      bookImage: require("../../../assets/png/book/poem.png"),
+      profileImage: require("../../../assets/png/icon/profile.png"),
       userName: "Hot Dog",
       timeAgo: "2 days ago",
       requestMessage: "sent a request to your book."

@@ -1,11 +1,11 @@
 import React from "react";
 import { ScrollView, StyleSheet, View, Text, Pressable, Dimensions, Image } from "react-native";
-import { Padding, FontFamily, Border, FontSize, Color } from "../../GlobalStyles";
+import { Padding, FontFamily, Border, FontSize, Color } from "../../../GlobalStyles";
 import { router } from "expo-router";
-import NavigationBar from "../../components/NavigationBar";
-import Title from "../../assets/svg/brand/Type.svg";
-import BookList from "../../components/book/BooklistItem"; // Adjust the path if needed
-import HistoryList from "../../components/book/HistoryList"; // Adjust the path if needed
+import NavigationBar from "../../../components/NavigationBar";
+import Title from "../../../assets/svg/brand/Type.svg";
+import BookList from "../../../components/book/BooklistItem"; // Adjust the path if needed
+import HistoryList from "../../../components/book/HistoryList"; // Adjust the path if needed
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -23,9 +23,9 @@ function MyBooklist() {
     const [activeTab, setActiveTab] = React.useState('My Books');
 
     const images = {
-        image5: require("../../assets/png/book/book=a little life.png"),
-        image6: require("../../assets/png/book/poem.png"),
-        image4: require("../../assets/png/book/book=small things.png"),
+        image5: require("../../../assets/png/book/book=a little life.png"),
+        image6: require("../../../assets/png/book/poem.png"),
+        image4: require("../../../assets/png/book/book=small things.png"),
     };
 
     const books = [
@@ -83,7 +83,7 @@ function MyBooklist() {
             style={styles.icon}
             resizeMode="contain"
             contentFit="cover"
-            source={require("../../assets/png/icon/search.png")}
+            source={require("../../../assets/png/icon/search.png")}
           />
                 </Pressable>
                 <Pressable style={styles.md24Layout} onPress={() => handlePress('home/homeNotification')}>
@@ -91,7 +91,7 @@ function MyBooklist() {
                         style={styles.icon}
                         resizeMode="contain"
                         contentFit="cover"
-                        source={require("../../assets/png/icon/noticeFill.png")}
+                        source={require("../../../assets/png/icon/noticeFill.png")}
                     />
                 </Pressable>
             </View>

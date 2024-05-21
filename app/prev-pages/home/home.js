@@ -14,23 +14,23 @@ import {
   Border,
   FontSize,
   Color,
-} from "../../GlobalStyles";
+} from "../../../GlobalStyles";
 import { router } from "expo-router";
-import NavigationBar from "../../components/NavigationBar";
-import Title from "../../assets/svg/brand/Type.svg";
-import BookList from "../../components/book/BooklistItem"; // Adjust the path if needed
-import api from "../../api";
-import { getErrorMessage } from "../../api/error-codes";
-import { useSession } from "../../contexts/auth.ctx";
+import NavigationBar from "../../../components/NavigationBar";
+import Title from "../../../assets/svg/brand/Type.svg";
+import BookList from "../../../components/book/BooklistItem"; // Adjust the path if needed
+import api from "../../../api";
+import { getErrorMessage } from "../../../api/error-codes";
+import { useSession } from "../../../contexts/auth.ctx";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
 function Home() {
   const images = {
-    image5: require("../../assets/png/book/book=a little life.png"),
-    image6: require("../../assets/png/book/poem.png"),
-    image4: require("../../assets/png/book/book=small things.png"),
+    image5: require("../../../assets/png/book/book=a little life.png"),
+    image6: require("../../../assets/png/book/poem.png"),
+    image4: require("../../../assets/png/book/book=small things.png"),
   };
 
   const [books, setBooks] = useState([
@@ -161,7 +161,7 @@ function Home() {
             style={styles.icon}
             resizeMode="contain"
             contentFit="cover"
-            source={require("../../assets/png/icon/search.png")}
+            source={require("../../../assets/png/icon/search.png")}
           />
         </Pressable>
         <Pressable
@@ -172,7 +172,7 @@ function Home() {
             style={styles.icon}
             resizeMode="contain"
             contentFit="cover"
-            source={require("../../assets/png/icon/noticeFill.png")}
+            source={require("../../../assets/png/icon/noticeFill.png")}
           />
         </Pressable>
       </View>

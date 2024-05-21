@@ -1,9 +1,9 @@
 import * as React from "react";
 import { useState } from "react";
 import { Image, Text, StyleSheet, View, TextInput, Button, ScrollView, Pressable } from "react-native";
-import { Color, FontSize, FontFamily, Padding, Border } from "../../GlobalStyles";
+import { Color, FontSize, FontFamily, Padding, Border } from "../../../GlobalStyles";
 import { router, useLocalSearchParams } from "expo-router";
-import UpArrow from "../../assets/svg/icon/arrow_up.svg"
+import UpArrow from "../../../assets/svg/icon/arrow_up.svg"
 
 const Dialogue = ({name, book1Image, book2Image, book1Title, book2Title, conversationDate}) => {
   const [messages, setMessages] = useState([

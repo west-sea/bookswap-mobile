@@ -1,11 +1,10 @@
 import * as React from "react";
-import { Image } from "expo-image";
-import { StyleSheet, Text, View, Pressable } from "react-native";
-import { Padding, Border, Color, FontFamily, FontSize } from "../GlobalStyles";
-import NavigationBar from "./NavigationBar";
+import { StyleSheet, Text, View, Pressable, Image } from "react-native";
+import { Padding, Border, Color, FontFamily, FontSize } from "../../../GlobalStyles";
+import NavigationBar from "../../../components/NavigationBar";
 
 const profileData = {
-  profileImage: require("../assets/ellipse-11.png"),
+  profileImage: require("../../../assets/png/icon/profile.png"),
   profileEmoji: "🌈",
   userName: "Rainbow",
   requestCount: 3,
@@ -26,7 +25,7 @@ const Profile = () => {
           <Image
             style={styles.md24Layout}
             contentFit="cover"
-            source={require("../assets/md24--request.png")}
+            source={require("../../../assets/png/icon/profile.png")}
           />
           <Text style={styles.myRequests}>My Requests</Text>
           <Text style={styles.textTypo}>{requestCount}</Text>
@@ -35,7 +34,7 @@ const Profile = () => {
           <Image
             style={styles.md24Layout}
             contentFit="cover"
-            source={require("../assets/md24--book.png")}
+            source={require("../../../assets/png/icon/profile.png")}
           />
           <Text style={styles.myRequests}>Favorite Genre</Text>
           <Text style={styles.textTypo}>{genreCount}</Text>
@@ -44,7 +43,7 @@ const Profile = () => {
           <Image
             style={styles.md24Layout}
             contentFit="cover"
-            source={require("../assets/md24--language.png")}
+            source={require("../../../assets/png/icon/profile.png")}
           />
           <Text style={styles.myRequests}>Language</Text>
           <Text style={styles.textTypo}>{language}</Text>
@@ -56,7 +55,7 @@ const Profile = () => {
           <Image
             style={styles.md24Layout}
             contentFit="cover"
-            source={require("../assets/md24--hi.png")}
+            source={require("../../../assets/png/icon/profile.png")}
           />
           <Text style={styles.myRequests}>Hi, we are SSS</Text>
           <Text style={[styles.text3, styles.textTypo]}>2</Text>
@@ -69,7 +68,7 @@ const Profile = () => {
         <Image
           style={[styles.md24Hi1, styles.md24Layout]}
           contentFit="cover"
-          source={require("../assets/md24--hi1.png")}
+          source={require("../../../assets/png/icon/profile.png")}
         />
         <Text style={styles.myRequests4}>Logout</Text>
         <Text style={[styles.text3, styles.textTypo]}>2</Text>
@@ -90,7 +89,7 @@ const Profile = () => {
           <Image
             style={styles.sm18Message}
             contentFit="cover"
-            source={require("../assets/sm18--message.png")}
+            source={require("../../../assets/png/icon/profile.png")}
           />
         </Pressable>
       </View>
@@ -100,12 +99,12 @@ const Profile = () => {
         <Image
           style={[styles.md24Add, styles.md24Layout]}
           contentFit="cover"
-          source={require("../assets/md24--add.png")}
+          source={require("../../../assets/png/icon/profile.png")}
         />
         <Image
           style={[styles.md24Add, styles.md24Layout]}
           contentFit="cover"
-          source={require("../assets/md24--notification.png")}
+          source={require("../../../assets/png/icon/profile.png")}
         />
       </View>
     </View>

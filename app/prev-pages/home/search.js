@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { Image, StyleSheet, View, Text, TextInput, ScrollView, Pressable } from "react-native";
-import { Padding, FontFamily, FontSize, Color, Border } from "../../GlobalStyles";
+import { Padding, FontFamily, FontSize, Color, Border } from "../../../GlobalStyles";
 import { router } from "expo-router";
-import LeftArrow from "../../assets/svg/icon/arrow_left.svg";
-import BookList from "../../components/book/BooklistItem"; // Adjust the path if needed
+import LeftArrow from "../../../assets/svg/icon/arrow_left.svg";
+import BookList from "../../../components/book/BooklistItem"; // Adjust the path if needed
 
 const images = {
-    image5: require("../../assets/png/book/book=a little life.png"),
-    image6: require("../../assets/png/book/poem.png"),
-    image4: require("../../assets/png/book/book=small things.png"),
+    image5: require("../../../assets/png/book/book=a little life.png"),
+    image6: require("../../../assets/png/book/poem.png"),
+    image4: require("../../../assets/png/book/book=small things.png"),
 };
 
 const books = [

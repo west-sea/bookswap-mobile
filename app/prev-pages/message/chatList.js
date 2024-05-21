@@ -1,18 +1,14 @@
 import * as React from "react";
 import { StyleSheet, View, Text, ScrollView, Image, Pressable } from "react-native";
-import ChatItem from "../../components/message/ChatItem"; // 방금 만든 컴포넌트를 불러옵니다.
-import { Padding, Color, Border, FontFamily, FontSize } from "../../GlobalStyles";
-import bookImage1 from "../../assets/svg/book/justice.svg";
-import bookImage2 from "../../assets/svg/book/poem.svg";
-import bookImage3 from "../../assets/svg/book/crime.svg";
-import bookImage4 from "../../assets/svg/book/before.svg";
-import NavigationBar from "../../components/NavigationBar";
+import ChatItem from "../../../components/message/ChatItem"; // 방금 만든 컴포넌트를 불러옵니다.
+import { Padding, Color, Border, FontFamily, FontSize } from "../../../GlobalStyles";
+import NavigationBar from "../../../components/NavigationBar";
 import { router, useLocalSearchParams } from "expo-router";
 
 const chatItems = [
     {
-      bookImage1: require("../../assets/png/book/poem.png"),
-      bookImage2: require("../../assets/png/book/book=justice.png"),
+      bookImage1: require("../../../assets/png/book/poem.png"),
+      bookImage2: require("../../../assets/png/book/book=justice.png"),
       userName: "Healthy Boy",
       lastMessage: "Bye Bye",
       book1Title: "poem",
@@ -20,8 +16,8 @@ const chatItems = [
       conversationDate: "5:15 PM",
     },
     {
-      bookImage1: require("../../assets/png/book/book=me before you.png"),
-      bookImage2: require("../../assets/png/book/book=justice.png"),
+      bookImage1: require("../../../assets/png/book/book=me before you.png"),
+      bookImage2: require("../../../assets/png/book/book=justice.png"),
       userName: "Shot Gun",
       lastMessage: "Have a nice day",
       book1Title: "me before you",
@@ -29,8 +25,8 @@ const chatItems = [
       conversationDate: "5 days",
     },
     {
-      bookImage1: require("../../assets/png/book/book=justice.png"),
-      bookImage2: require("../../assets/png/book/book=justice.png"),
+      bookImage1: require("../../../assets/png/book/book=justice.png"),
+      bookImage2: require("../../../assets/png/book/book=justice.png"),
       userName: "Fire Melon",
       lastMessage: "Nice!",
       book1Title: "justice",

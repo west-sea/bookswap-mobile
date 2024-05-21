@@ -2,16 +2,13 @@ import { View, Image, StyleSheet } from "react-native";
 
 export default function Avatar({ filename }) {
   return (
-    <View style={styles.container}>
+    <View>
       <Image src={getAvatarUrl(filename)} style={styles.avatar} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    // padding: 5,
-  },
   avatar: {
     width: 60,
     height: 60,

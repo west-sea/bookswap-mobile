@@ -1,18 +1,6 @@
 import { StyleSheet, Text, View, Pressable } from "react-native";
 import i18n from "../../locales/i18n";
-
-const genres = [
-  "novel",
-  "poetry",
-  "art",
-  "science",
-  "philosophy",
-  "history",
-  "biography",
-  "religion",
-  "cooking",
-  "health",
-];
+import { genres } from "../../api/constants";
 
 export default function GenreSelector({
   selectedGenres,
