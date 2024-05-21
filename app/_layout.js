@@ -1,8 +1,5 @@
-import React, { useEffect } from "react";
-import { Redirect, router, usePathname } from "expo-router";
-import { useSession } from "../contexts/auth.ctx";
-import Splash from "../components/brand/Splash";
-import { SocketProvider } from "../contexts/socket.ctx";
+import React from "react";
+import { usePathname } from "expo-router";
 import { Slot } from "expo-router";
 import { SessionProvider } from "../contexts/auth.ctx";
 import Toast from "react-native-toast-message";
@@ -14,26 +11,8 @@ export default function Root() {
 
   return (
     <SessionProvider>
-      {pathname === "/auth" ? (
-        <Slot />
-      ) : (
-        <ProtectedLayout>
-          <Slot />
-        </ProtectedLayout>
-      )}
+      <Slot />
       <Toast />
     </SessionProvider>
   );
-}
-
-function ProtectedLayout({ children }) {
-  const { token } = useSession();
-
-  useEffect(() => {
-    if (!token) {
-      router.replace("/auth");
-    }
-  }, [token]);
-
-  return <SocketProvider token={token}>{children}</SocketProvider>;
 }
