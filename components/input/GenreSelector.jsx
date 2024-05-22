@@ -6,7 +6,6 @@ export default function GenreSelector({
   selectedGenres,
   toggleGenreSelection,
 }) {
-  const { i18n } = useTranslation();
   return (
     <View style={styles.container}>
       {genres.map((genre) => (
@@ -22,6 +21,7 @@ export default function GenreSelector({
 }
 
 function GenreSelection({ genre, isSelected, onPress }) {
+  const { i18n } = useTranslation();
   return (
     <Pressable
       onPress={onPress}

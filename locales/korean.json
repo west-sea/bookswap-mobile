@@ -19,7 +19,7 @@
   "tabs": {
     "home": "집",
     "message": "메시지",
-    "books": "내 책",
+    "books": "내 책들",
     "profile": "내 프로필"
   },
   "feed": {
@@ -51,6 +51,17 @@
     "language": "언어 변경",
     "about": "북스왑(BookSwap) 소개"
   },
+  "editProfile": {
+    "title": "프로필 수정",
+    "save": "구하다",
+    "nickname": "별명",
+    "email": "이메일",
+    "nickname-placeholder": "책을 좋아하는 사람",
+    "nickname-invalid": "닉네임은 3자 이상이어야 합니다."
+  },
+  "editGenres": {
+    "title": "선호하는 장르 편집"
+  },
   "notifications": {
     "header": "알림",
     "empty": "알림이 없습니다.",
@@ -65,6 +76,25 @@
     "results": "{{count}} 일치하는 책 발견",
     "empty": "검색 결과가 없습니다",
     "empty-feedback": "책이나 작가를 검색해 보세요."
+  },
+  "bookshelf": {
+    "header": "사용 가능",
+    "empty": "아직 책을 추가하지 않았습니다...",
+    "empty-feedback": "아래의 더하기 버튼을 눌러 하나를 추가해 보세요.",
+    "private": "사적인",
+    "public": "공공의",
+    "hiddenFrom": "로부터 숨겨져있다 {{count}} 사람들",
+    "shownTo": "표시 대상 {{count}} 사람들",
+    "options": "옵션을 선택하세요"
+  },
+  "history": {
+    "header": "역사",
+    "empty": "아직 어떤 교류에도 참여하지 않으셨습니다...",
+    "empty-feedback": "읽고 싶은 책을 요청해 보세요",
+    "reservedByOther": "{{ user }} 당신의 책을 예약했습니다 {{ date }}",
+    "exchangedByOther": "{{ user }} 네 책을 켰어 {{ date }}",
+    "reservedByMe": "예약하셨습니다 {{ user }}님의 책 {{ date }}",
+    "exchangedByMe": "당신은 {{ user }}님의 책 {{ date }}"
   },
   "about": {
     "title": "우리의 도서 공유 플랫폼에 오신 것을 환영합니다!",

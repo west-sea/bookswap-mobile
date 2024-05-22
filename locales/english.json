@@ -52,10 +52,15 @@
     "about": "About BookSwap"
   },
   "editProfile": {
+    "title": "Edit Profile",
     "save": "Save",
     "nickname": "Nickname",
     "email": "Email",
-    "nickname-placeholder": "booklover"
+    "nickname-placeholder": "booklover",
+    "nickname-invalid": "Nickname must be at least 3 characters long."
+  },
+  "editGenres": {
+    "title": "Edit Preferred Genres"
   },
   "notifications": {
     "header": "Notifications",

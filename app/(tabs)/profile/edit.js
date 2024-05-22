@@ -7,7 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 import FormData from "form-data";
-import { showInfo } from '../../../components/Toaster';
+import { showError, showInfo } from "../../../components/Toaster";
 
 export default function Tab() {
   const { i18n } = useTranslation();
@@ -23,6 +23,10 @@ export default function Tab() {
   const [newAvatar, setNewAvatar] = useState(null);
 
   const handleSave = () => {
+    if (!text || text.length < 3) {
+      showError(i18n.t("editProfile.nickname-invalid"));
+      return;
+    }
     const data = new FormData();
     data.append("nickname", text);
     let avatarImage = {};
@@ -64,12 +68,13 @@ export default function Tab() {
       }}
     >
       <PageHeader
-        title="Edit Profile"
+        title={i18n.t("editProfile.title")}
         actionButton={
           <TouchableOpacity
             onPress={handleSave}
             style={{
               paddingRight: 16,
+              paddingVertical: 8,
               justifyContent: "center",
               alignItems: "center",
             }}
