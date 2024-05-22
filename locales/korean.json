@@ -19,7 +19,7 @@
   "tabs": {
     "home": "집",
     "message": "메시지",
-    "books": "내 책들",
+    "books": "내 책",
     "profile": "내 프로필"
   },
   "feed": {
@@ -50,6 +50,15 @@
     "preferredGenres": "선호하는 장르",
     "language": "언어 변경",
     "about": "북스왑(BookSwap) 소개"
+  },
+  "notifications": {
+    "header": "알림",
+    "empty": "알림이 없습니다.",
+    "default": "알림이 있습니다.",
+    "archive": "{{A}} 다른 사람의 요청을 수락했습니다.",
+    "request": "{{A}} 당신의 책에 대한 요청을 보냈습니다",
+    "accept": "{{A}} 교환 요청을 수락했습니다",
+    "exchange": "{{A}} 교환이 완료됨으로 표시됨"
   },
   "about": {
     "title": "우리의 도서 공유 플랫폼에 오신 것을 환영합니다!",

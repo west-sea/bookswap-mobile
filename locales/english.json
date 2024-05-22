@@ -51,6 +51,15 @@
     "language": "Change Language",
     "about": "About BookSwap"
   },
+  "notifications": {
+    "header": "Notifications",
+    "empty": "You have no notifications.",
+    "default": "You have notification.",
+    "archive": "{{A}} accepted someone else's request",
+    "request": "{{A}} sent a request to your book",
+    "accept": "{{A}} accepted your exchange request",
+    "exchange": "{{A}} marked the exchange as completed"
+  },
   "about": {
     "title": "Welcome to Our Book-Sharing Platform!",
     "description": "Thank you for joining us in enhancing KAIST's reading culture through our new software. This platform aims to broaden your book options beyond the library's offerings, making it easier to find and share reading materials.",
