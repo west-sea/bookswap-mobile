@@ -60,6 +60,12 @@
     "accept": "{{A}} 교환 요청을 수락했습니다",
     "exchange": "{{A}} 교환이 완료됨으로 표시됨"
   },
+  "search": {
+    "placeholder": "해리 포터",
+    "results": "{{count}} 일치하는 책 발견",
+    "empty": "검색 결과가 없습니다",
+    "empty-feedback": "책이나 작가를 검색해 보세요."
+  },
   "about": {
     "title": "우리의 도서 공유 플랫폼에 오신 것을 환영합니다!",
     "description": "새로운 소프트웨어를 통해 KAIST의 독서 문화를 향상시키는 데 동참해 주셔서 감사합니다. ",

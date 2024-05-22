@@ -60,6 +60,12 @@
     "accept": "{{A}} accepted your exchange request",
     "exchange": "{{A}} marked the exchange as completed"
   },
+  "search": {
+    "placeholder": "Harry Potter",
+    "results": "{{count}} matching books found",
+    "empty": "No results found",
+    "empty-feedback": "Try searching for books or authors"
+  },
   "about": {
     "title": "Welcome to Our Book-Sharing Platform!",
     "description": "Thank you for joining us in enhancing KAIST's reading culture through our new software. This platform aims to broaden your book options beyond the library's offerings, making it easier to find and share reading materials.",
