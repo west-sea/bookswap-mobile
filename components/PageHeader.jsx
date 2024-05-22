@@ -2,7 +2,7 @@ import { View, TouchableOpacity, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 
-export default function PageHeader({ title }) {
+export default function PageHeader({ title, actionButton }) {
   return (
     <View
       style={{
@@ -26,7 +26,7 @@ export default function PageHeader({ title }) {
         <Ionicons name="chevron-back" size={24} color="black" />
       </TouchableOpacity>
       <Text style={{ fontWeight: "bold", fontSize: 24 }}>{title}</Text>
-      <View style={{ flexBasis: "10%" }}></View>
+      {actionButton ? actionButton : <View style={{ flexBasis: "10%" }}></View>}
     </View>
   );
 }

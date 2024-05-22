@@ -51,6 +51,12 @@
     "language": "Change Language",
     "about": "About BookSwap"
   },
+  "editProfile": {
+    "save": "Save",
+    "nickname": "Nickname",
+    "email": "Email",
+    "nickname-placeholder": "booklover"
+  },
   "notifications": {
     "header": "Notifications",
     "empty": "You have no notifications.",
