@@ -134,7 +134,7 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="my-books"
+          name="bookshelf/index"
           options={{
             tabBarLabel: i18n.t("tabs.books"),
             title: i18n.t("tabs.books"),

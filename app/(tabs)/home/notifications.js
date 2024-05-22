@@ -88,7 +88,7 @@ export default function NotificationsPage() {
   const [notifications, setNotifications] = useState(mockNotifications);
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: "white" }}>
       <PageHeader title={i18n.t("notifications.header")} />
       {/* Content */}
       <FlatList

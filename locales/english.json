@@ -66,6 +66,25 @@
     "empty": "No results found",
     "empty-feedback": "Try searching for books or authors"
   },
+  "bookshelf": {
+    "header": "Available",
+    "empty": "You haven't added any books yet...",
+    "empty-feedback": "Try adding one by pressing the plus button below",
+    "private": "Private",
+    "public": "Public",
+    "hiddenFrom": "Hidden from {{count}} people",
+    "shownTo": "Shown to {{count}} people",
+    "options": "Choose an option"
+  },
+  "history": {
+    "header": "History",
+    "empty": "You did not participate in any exchange yet...",
+    "empty-feedback": "Try requesting books you want to read",
+    "reservedByOther": "{{ user }} reserved your book on {{ date }}",
+    "exchangedByOther": "{{ user }} got your book on {{ date }}",
+    "reservedByMe": "You reserved {{ user }}'s book on {{ date }}",
+    "exchangedByMe": "You got {{ user }}'s book on {{ date }}"
+  },
   "about": {
     "title": "Welcome to Our Book-Sharing Platform!",
     "description": "Thank you for joining us in enhancing KAIST's reading culture through our new software. This platform aims to broaden your book options beyond the library's offerings, making it easier to find and share reading materials.",
