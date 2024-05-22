@@ -9,16 +9,20 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Platform,
-  Keyboard,
 } from "react-native";
 import { getAvatarUrl } from "../../../components/users/Avatar";
 import { FontAwesome5, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
+import SwappedImage from "../../../assets/png/chat/swapped.png";
 
 export default function ChatPage() {
   const mockChat = {
     exchangeId: "66309f8691d019ed240c646f",
+    // status: "APPROVED",
+    approvedAt: "2024-05-10T12:42:18.179+00:00",
+    status: "COMPLETED",
+    exchangedAt: "2024-05-21T12:42:18.179+00:00",
     offeredBook: {
       title: "Harry Potter",
       cover: "028e43d0783530373609309002fa405e.png",
@@ -33,13 +37,13 @@ export default function ChatPage() {
       cover: "028e43d0783530373609309002fa405e.png",
     },
     requestedBy: {
-      userId: "66309f8691d019ed240c646f",
+      userId: "my-user-id",
       nickname: "fool",
-      avatar: "Profile2.jpg",
+      avatar: "Profile2.png",
     },
     latestMessage: {
       text: "Bye bye",
-      createdAt: "2024-05-21T12:42:18.179+00:00",
+      createdAt: "2024-05-20T12:42:18.179+00:00",
       seen: true,
     },
   };
@@ -47,31 +51,31 @@ export default function ChatPage() {
     {
       sender: "66309f8691d019ed240c646f",
       text: "Hello",
-      createdAt: "2024-05-03T12:42:18.179+00:00",
+      createdAt: "2024-05-14T12:42:18.179+00:00",
       seen: false,
     },
     {
       sender: "66309f8691d019ed240c646f",
       text: "Thank you! When do you want to meet?",
-      createdAt: "2024-05-03T12:42:18.179+00:00",
+      createdAt: "2024-05-15T12:42:18.179+00:00",
       seen: false,
     },
     {
       sender: "66309f8691d019ed240c646f",
       text: "That's a long message .... I hope you are doing well! ... Finish the project ASAP ... Good luck! ... Bye bye",
-      createdAt: "2024-05-03T12:42:18.179+00:00",
+      createdAt: "2024-05-15T12:43:18.179+00:00",
       seen: false,
     },
     {
       sender: "my-user-id",
       text: "Nice to meet you! How about 11PM?",
-      createdAt: "2024-05-03T12:42:18.179+00:00",
+      createdAt: "2024-05-16T12:42:18.179+00:00",
       seen: false,
     },
     {
       sender: "66309f8691d019ed240c646f",
       text: "Sounds good! See you then!",
-      createdAt: "2024-05-03T12:42:18.179+00:00",
+      createdAt: "2024-05-17T12:42:18.179+00:00",
       seen: false,
     },
   ];
@@ -80,6 +84,7 @@ export default function ChatPage() {
 
   const [chat, setChat] = useState(mockChat);
   const [messages, setMessages] = useState(mockMessages);
+  const [history, setHistory] = useState([]);
   const [text, setText] = useState("");
   const flatlist = useRef(null);
   const { i18n } = useTranslation();
@@ -90,6 +95,77 @@ export default function ChatPage() {
 
   const doIOffer = chat.offeredBy.userId === "my-user-id";
   const sender = doIOffer ? chat.requestedBy : chat.offeredBy;
+
+  useEffect(() => {
+    if (!chat || !messages) return;
+    const history = [
+      {
+        action: {
+          type: "DATE",
+        },
+        date: chat.approvedAt,
+      },
+      {
+        action: {
+          type: "APPROVE",
+          offeredBy: chat.offeredBy.nickname,
+          requestedBy: chat.requestedBy.nickname,
+        },
+        date: chat.approvedAt,
+      },
+    ];
+    for (let message of messages) {
+      // add date action if the date does not exist in history
+      const date = dayjs(message.createdAt);
+      if (
+        !history.some(
+          (item) =>
+            item.action?.type === "DATE" && date.isSame(item.date, "day")
+        )
+      ) {
+        history.push({
+          action: {
+            type: "DATE",
+          },
+          date,
+        });
+      }
+      history.push(message);
+    }
+    if (chat.status === "COMPLETED") {
+      if (
+        !history.some(
+          (item) =>
+            item.action?.type === "DATE" &&
+            dayjs(chat.exchangedAt).isSame(item.date, "day")
+        )
+      ) {
+        history.push({
+          action: {
+            type: "DATE",
+          },
+          date: chat.exchangedAt,
+        });
+      }
+      history.push({
+        action: {
+          type: "EXCHANGE",
+          requestedBy: chat.requestedBy,
+        },
+        date: chat.exchangedAt,
+      });
+    }
+    history.sort((a, b) => {
+      let aDate = a.date || a.createdAt;
+      let bDate = b.date || b.createdAt;
+      return dayjs(aDate).isSame(bDate)
+        ? 0
+        : dayjs(aDate).isBefore(bDate)
+        ? -1
+        : 1;
+    });
+    setHistory(history);
+  }, [chat, messages]);
 
   const handleBack = () => {
     router.back();
@@ -117,14 +193,9 @@ export default function ChatPage() {
 
   const scrollToEnd = () => {
     if (!flatlist.current) return;
-    flatlist.current.scrollToIndex({ index: messages.length - 1 });
+    if (history.length === 0) return;
+    flatlist.current.scrollToIndex({ index: history.length - 1 });
   };
-  useEffect(() => {
-    Keyboard.addListener("keyboardDidShow", scrollToEnd);
-    return () => {
-      Keyboard.removeAllListeners("keyboardDidShow");
-    };
-  }, []);
 
   return (
     <KeyboardAvoidingView
@@ -199,20 +270,24 @@ export default function ChatPage() {
               </Text>
             </View>
             {/* Complete action */}
-            <TouchableOpacity
-              onPress={handleComplete}
-              style={{
-                backgroundColor: "#40B250",
-                justifyContent: "center",
-                alignItems: "center",
-                padding: 8,
-                borderRadius: 20,
-              }}
-            >
-              <Text style={{ color: "white", fontWeight: "600", fontSize: 16 }}>
-                {i18n.t("chat.swap")}
-              </Text>
-            </TouchableOpacity>
+            {chat.status === "APPROVED" && !doIOffer && (
+              <TouchableOpacity
+                onPress={handleComplete}
+                style={{
+                  backgroundColor: "#40B250",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  padding: 8,
+                  borderRadius: 20,
+                }}
+              >
+                <Text
+                  style={{ color: "white", fontWeight: "600", fontSize: 16 }}
+                >
+                  {i18n.t("chat.swap")}
+                </Text>
+              </TouchableOpacity>
+            )}
           </View>
           {/* Second book */}
           <Image
@@ -230,9 +305,15 @@ export default function ChatPage() {
           backgroundColor: "#DEE1EB",
         }}
         showsVerticalScrollIndicator={false}
-        data={messages}
+        data={history}
         keyExtractor={(_, i) => i}
-        renderItem={({ item }) => <Message message={item} sender={sender} />}
+        renderItem={({ item }) =>
+          item.action ? (
+            <ActionMessage action={item.action} date={item.date} />
+          ) : (
+            <Message message={item} sender={sender} />
+          )
+        }
         ListEmptyComponent={EmptyChat}
       />
       {/* </View> */}
@@ -304,6 +385,146 @@ function Message(props) {
     <OutgoingMessage {...props} />
   ) : (
     <IncomingMessage {...props} />
+  );
+}
+
+function ActionMessage({ action, date }) {
+  if (action.type === "DATE") {
+    return <DateAction date={date} />;
+  }
+  if (action.type === "APPROVE") {
+    return (
+      <ApproveAction
+        date={date}
+        requestedBy={action.requestedBy}
+        offeredBy={action.offeredBy}
+      />
+    );
+  }
+  if (action.type === "EXCHANGE") {
+    return <ExchangeAction date={date} requestedBy={action.requestedBy} />;
+  }
+}
+
+function DateAction({ date }) {
+  return (
+    <View
+      style={{
+        justifyContent: "center",
+        alignItems: "center",
+        paddingVertical: 8,
+      }}
+    >
+      <View
+        style={{
+          backgroundColor: "#F2F3F7",
+          paddingVertical: 6,
+          paddingHorizontal: 12,
+          borderRadius: 4,
+        }}
+      >
+        <Text style={{ color: "#6E7A9F", fontSize: 12 }}>
+          {dayjs(date).format("YYYY.MM.DD")}
+        </Text>
+      </View>
+    </View>
+  );
+}
+
+function ApproveAction({ date, requestedBy, offeredBy }) {
+  const { i18n } = useTranslation();
+
+  return (
+    <View
+      style={{
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 8,
+      }}
+    >
+      <View
+        style={{
+          backgroundColor: "#F2F3F7",
+          paddingVertical: 6,
+          paddingHorizontal: 12,
+          borderRadius: 4,
+        }}
+      >
+        <Text style={{ color: "#6E7A9F", fontSize: 12, textAlign: "center" }}>
+          {i18n.t("chat.accepted", { A: offeredBy, B: requestedBy })}
+        </Text>
+        <Text style={{ color: "#6E7A9F", fontSize: 12, textAlign: "center" }}>
+          {dayjs(date).format("h:mm A")}
+        </Text>
+      </View>
+    </View>
+  );
+}
+
+function ExchangeAction({ date, requestedBy }) {
+  const isRequestedByMe = requestedBy.userId === "my-user-id";
+  const { i18n } = useTranslation();
+  return (
+    <View
+      style={{
+        flexDirection: isRequestedByMe ? "row-reverse" : "row",
+        gap: 8,
+        padding: 8,
+        justifyContent: "flex-start",
+      }}
+    >
+      {/* Sender profile */}
+      {!isRequestedByMe && (
+        <View style={{ justifyContent: "flex-end", alignItems: "center" }}>
+          <Image
+            src={getAvatarUrl(requestedBy.avatar)}
+            style={{
+              borderRadius: 50,
+              width: 30,
+              height: 30,
+            }}
+          />
+        </View>
+      )}
+      {/* Message content */}
+      <View
+        style={{
+          backgroundColor: "white",
+          paddingBottom: 5,
+          borderRadius: 20,
+          borderBottomLeftRadius: isRequestedByMe ? 20 : 4,
+          borderBottomRightRadius: isRequestedByMe ? 4 : 20,
+          elevation: 3,
+          maxWidth: "75%",
+          backgroundColor: isRequestedByMe ? "#AFEEB8" : "white",
+        }}
+      >
+        <Image
+          source={SwappedImage}
+          style={{
+            width: "100%",
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+          }}
+        />
+        <View style={{ paddingHorizontal: 16, paddingVertical: 4 }}>
+          <Text style={{ fontSize: 16 }}>
+            {i18n.t("chat.exchanged", { A: requestedBy.nickname })}
+          </Text>
+        </View>
+      </View>
+      {/* Time */}
+      <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
+        <Text
+          style={{
+            color: "#6E7A9F",
+            fontSize: 12,
+          }}
+        >
+          {dayjs(date).format("h:mm A")}
+        </Text>
+      </View>
+    </View>
   );
 }
 

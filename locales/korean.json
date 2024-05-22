@@ -37,7 +37,9 @@
     "swap": "완전한 교환",
     "empty": "아직 메시지가 없습니다...",
     "empty-feedback": "채팅을 시작하려면 빠른 메시지를 보내세요!",
-    "placeholder": "메시지를 작성하세요..."
+    "placeholder": "메시지를 작성하세요...",
+    "accepted": "{{A}} 수락됨 {{B}}님의 요청",
+    "exchanged": "완료로 표시된 교환: {{A}}"
   },
   "profile": {
     "edit": "편집하다",

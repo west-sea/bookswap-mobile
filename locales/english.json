@@ -37,7 +37,9 @@
     "swap": "Complete exchange",
     "empty": "No messages yet...",
     "empty-feedback": "Send a quick message to start chatting!",
-    "placeholder": "Write a message..."
+    "placeholder": "Write a message...",
+    "accepted": "{{A}} accepted {{B}}'s request",
+    "exchanged": "Exchange marked as completed by {{A}}"
   },
   "profile": {
     "edit": "Edit",
