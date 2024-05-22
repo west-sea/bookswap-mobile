@@ -31,7 +31,9 @@
   },
   "chats": {
     "empty": "You haven't started any conversation yet...",
-    "empty-feedback": "Requst a book to start chatting with the owner"
+    "empty-feedback": "Requst a book to start chatting with the owner",
+    "now": "Now",
+    "write": "Empty chat"
   },
   "chat": {
     "swap": "Complete exchange",

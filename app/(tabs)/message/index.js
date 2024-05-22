@@ -28,11 +28,11 @@ export default function Tab() {
         nickname: "fool",
         avatar: "Profile2.jpg",
       },
-      latestMessage: {
-        text: "Bye bye",
-        createdAt: "2024-05-21T12:42:18.179+00:00",
-        seen: false,
-      },
+      // latestMessage: {
+      //   text: "Bye bye",
+      //   createdAt: "2024-05-21T12:42:18.179+00:00",
+      //   seen: false,
+      // },
     },
     {
       exchangeId: "66309f8691d019ed240c646f",
@@ -85,14 +85,14 @@ export default function Tab() {
 }
 
 export function Chat({ chat }) {
+  const { i18n } = useTranslation();
   const doIOffer = chat.offeredBy.userId === "myuserId";
   const chatTitle = doIOffer
     ? chat.requestedBy.nickname
     : chat.offeredBy.nickname;
-  const latestMessageDate = dayjs().to(
-    dayjs(chat.latestMessage.createdAt),
-    true
-  );
+  const latestMessageDate = chat.latestMessage
+    ? dayjs().to(dayjs(chat.latestMessage.createdAt), true)
+    : i18n.t("chats.now");
   const firstBookCover = doIOffer
     ? chat.exchangedBook.cover
     : chat.offeredBook.cover;
@@ -102,7 +102,7 @@ export function Chat({ chat }) {
   const secondBookCover = doIOffer
     ? chat.offeredBook.cover
     : chat.exchangedBook.cover;
-  const isLastMessageSeen = chat.latestMessage.seen;
+  const isLastMessageSeen = chat.latestMessage?.seen;
 
   const handleChatSelection = () => {
     router.push({
@@ -188,7 +188,11 @@ export function Chat({ chat }) {
         >
           {/* Last message text */}
           <Text style={{ fontWeight: isLastMessageSeen ? "normal" : "500" }}>
-            {chat.latestMessage.text}
+            {shorten(
+              chat.latestMessage
+                ? chat.latestMessage.text
+                : i18n.t("chats.write")
+            )}
           </Text>
           {/* Is Last message seen indicator */}
           {!isLastMessageSeen && <UnseenIndicator />}
@@ -215,4 +219,8 @@ function NoChatsFound() {
 
 function UnseenIndicator() {
   return <Ionicons name="ellipse" size={12} color="#FF6746" />;
+}
+
+function shorten(text) {
+  return text.length > 20 ? `${text.slice(0, 20)}...` : text;
 }
