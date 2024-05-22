@@ -15,6 +15,7 @@ import { FontAwesome5, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 import SwappedImage from "../../../assets/png/chat/swapped.png";
+import PageHeader from "../../../components/PageHeader";
 
 export default function ChatPage() {
   const mockChat = {
@@ -91,6 +92,7 @@ export default function ChatPage() {
 
   useEffect(() => {
     console.log(`Exchange ID: `, params.exchangeId);
+    scrollToEnd();
   }, []);
 
   const doIOffer = chat.offeredBy.userId === "my-user-id";
@@ -207,32 +209,7 @@ export default function ChatPage() {
       {/* Header */}
       <View>
         {/* Chat title */}
-        <View
-          style={{
-            flexDirection: "row",
-            backgroundColor: "white",
-            justifyContent: "space-between",
-            alignItems: "center",
-            paddingTop: 30,
-            paddingBottom: 12,
-          }}
-        >
-          <TouchableOpacity
-            onPress={handleBack}
-            style={{
-              flexBasis: "10%",
-              justifyContent: "center",
-              alignItems: "center",
-              paddingLeft: 16,
-            }}
-          >
-            <Ionicons name="chevron-back" size={24} color="black" />
-          </TouchableOpacity>
-          <Text style={{ fontWeight: "bold", fontSize: 24 }}>
-            {sender.nickname}
-          </Text>
-          <View style={{ flexBasis: "10%" }}></View>
-        </View>
+        <PageHeader title={sender.nickname} />
         {/* Chat info */}
         <View
           style={{

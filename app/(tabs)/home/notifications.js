@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
 import { Ionicons, Octicons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import PageHeader from "../../../components/PageHeader";
 
 export default function NotificationsPage() {
   const mockNotifications = [
@@ -87,10 +88,8 @@ export default function NotificationsPage() {
   const [notifications, setNotifications] = useState(mockNotifications);
 
   return (
-    <View style={{ flex: 1, paddingTop: 40 }}>
-      <Text style={{ textAlign: "center", fontWeight: "bold", fontSize: 24 }}>
-        {i18n.t("notifications.header")}
-      </Text>
+    <View style={{ flex: 1 }}>
+      <PageHeader title={i18n.t("notifications.header")} />
       {/* Content */}
       <FlatList
         ListEmptyComponent={NoNotificationsFound}
