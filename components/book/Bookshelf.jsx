@@ -41,7 +41,17 @@ function MyBookItem({ book }) {
 
   const [isModalShown, setIsModalShown] = useState(false);
 
-  const handleEditRequest = () => {
+  const handleSeeRequests = () => {
+    setIsModalShown(false);
+    router.push({
+      pathname: "bookshelf/requests",
+      params: {
+        bookId: book.bookId,
+      },
+    });
+  };
+
+  const handleEdit = () => {
     setIsModalShown(false);
     router.push({
       pathname: "bookshelf/edit",
@@ -51,7 +61,7 @@ function MyBookItem({ book }) {
     });
   };
 
-  const handleDeleteRequest = () => {
+  const handleDelete = () => {
     // TODO: Implement delete functionality
     setIsModalShown(false);
     console.log("DElETE");
@@ -133,13 +143,21 @@ function MyBookItem({ book }) {
         onClose={() => setIsModalShown(false)}
       >
         <TouchableOpacity
-          onPress={handleEditRequest}
+          onPress={handleSeeRequests}
+          style={{ paddingHorizontal: 20, paddingVertical: 10 }}
+        >
+          <Text style={{ fontSize: 18, textAlign: "center" }}>
+            See requests
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={handleEdit}
           style={{ paddingHorizontal: 20, paddingVertical: 10 }}
         >
           <Text style={{ fontSize: 18, textAlign: "center" }}>Edit</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={handleDeleteRequest}
+          onPress={handleDelete}
           style={{ paddingHorizontal: 20, paddingVertical: 10 }}
         >
           <Text style={{ fontSize: 18, textAlign: "center", color: "red" }}>
