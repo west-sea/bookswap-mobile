@@ -120,6 +120,41 @@
     "reservedByMe": "You reserved {{ user }}'s book on {{ date }}",
     "exchangedByMe": "You got {{ user }}'s book on {{ date }}"
   },
+  "upload": {
+    "title": "Add book",
+    "save": "Save",
+    "fields": {
+      "cover": "Cover",
+      "title": "Title",
+      "author": "Author",
+      "genre": "Genre",
+      "visibility": "Visibility",
+      "visibilityOptions": {
+        "public": "Show to everyone",
+        "private": "Hide from everyone"
+      },
+      "exceptions": {
+        "public": "Hide from specific users",
+        "private": "Show to specific users"
+      },
+      "exception": {
+        "add": "Add user",
+        "choose": "Choose users to add",
+        "empty": "Search by nickname and add users",
+        "select": "Select",
+        "emptySearch": "No users found",
+        "addSelected": "Add selected users"
+      }
+    },
+    "invalid": {
+      "cover": "You need to upload image as a cover.",
+      "title": "Title should be at least 3 characters long.",
+      "author": "Author should be provided.",
+      "genre": "One of the genres should be chosen.",
+      "visibility": "Visibility should be chosen among the given options",
+      "coverCancel": "You didn't select any image."
+    }
+  },
   "about": {
     "title": "Welcome to Our Book-Sharing Platform!",
     "description": "Thank you for joining us in enhancing KAIST's reading culture through our new software. This platform aims to broaden your book options beyond the library's offerings, making it easier to find and share reading materials.",

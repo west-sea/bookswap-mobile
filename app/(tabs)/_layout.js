@@ -116,6 +116,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="upload"
           options={{
+            headerShown: false,
             tabBarStyle: { display: "none" },
             tabBarButton: (props) => {
               return (

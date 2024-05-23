@@ -46,7 +46,6 @@ export default function Tab() {
   };
 
   const handleImageUpload = async () => {
-    console.log("Upload image");
     let result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
       quality: 0.2,
