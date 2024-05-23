@@ -8,6 +8,7 @@ import {
   Text,
   TouchableOpacity,
   FlatList,
+  ActivityIndicator,
 } from "react-native";
 import BookItem from "../../../components/book/BookItem";
 
@@ -120,8 +121,9 @@ export default function SearchPage() {
           disabled={!text || isLoading}
         >
           {isLoading ? (
-            <SpinningIcon />
+            <ActivityIndicator color="white" size={16} />
           ) : (
+            // <SpinningIcon />
             <Ionicons name="search" size={16} color="white" />
           )}
         </TouchableOpacity>
