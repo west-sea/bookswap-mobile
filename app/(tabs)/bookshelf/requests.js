@@ -50,6 +50,7 @@ export default function Tab() {
   ];
 
   const params = useLocalSearchParams();
+  const { exchangeId } = params;
   const { i18n } = useTranslation();
 
   const [book, setBook] = useState(mockBook);
@@ -88,22 +89,26 @@ export default function Tab() {
         }}
         data={requests}
         keyExtractor={(_, i) => i}
-        renderItem={({ item }) => <RequestedUser exchange={item} />}
+        renderItem={({ item }) => <RequestedUser exchange={item} book={book} />}
       />
     </View>
   );
 }
 
-function RequestedUser({ exchange }) {
+function RequestedUser({ exchange, book }) {
   const date = dayjs().to(dayjs(exchange.createdAt), true);
   const user = exchange.requestedBy;
   const { i18n } = useTranslation();
 
   const handleSelect = () => {
     router.push({
-      pathname: "/bookshelf/user",
+      pathname: "bookshelf/user",
       params: {
         userId: user.userId,
+        nickname: user.nickname,
+        avatar: user.avatar,
+        offeredBookTitle: book.title,
+        offeredBookCover: book.cover,
       },
     });
   };

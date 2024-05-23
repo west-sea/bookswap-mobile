@@ -102,6 +102,15 @@
     "count": "{{count}} requests",
     "selectUser": "Select"
   },
+  "userBookshelf": {
+    "title": "{{ user }}'s Bookshelf",
+    "select": "Select the book you want to get in exchange",
+    "selectBook": "Select",
+    "confirmation": "Would you like to swap books?",
+    "confirm": "Approve exchange",
+    "cancel": "Cancel",
+    "success": "Nice choice! You approved {{ user }}'s exchange request"
+  },
   "history": {
     "header": "History",
     "empty": "You did not participate in any exchange yet...",
