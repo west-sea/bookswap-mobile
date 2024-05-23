@@ -13,15 +13,30 @@ import { useTranslation } from "react-i18next";
 import { useSession } from "../../contexts/auth.ctx";
 import { SocketProvider } from "../../contexts/socket.ctx";
 import Splash from "../../components/brand/Splash";
+import { useDispatch, useSelector } from "react-redux";
+import { signIn } from "../../store/auth";
 
 export default function TabLayout() {
   const { i18n } = useTranslation();
-  const { token, isLoading } = useSession();
+  const authState = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const { isLoading, token, user } = useSession();
 
   if (isLoading) return <Splash />;
 
-  if (!token) {
+  if (!authState.token) {
     return <Redirect href="/auth" />;
+    // try loading from storage
+    // if (token) {
+    //   dispatch(
+    //     signIn({
+    //       token,
+    //       user: JSON.parse(user),
+    //     })
+    //   );
+    // } else {
+    //   return <Redirect href="/auth" />;
+    // }
   }
 
   return (

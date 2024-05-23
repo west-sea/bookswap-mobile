@@ -6,17 +6,34 @@ import { router } from "expo-router";
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import Toast from "react-native-toast-message";
+import { api } from "../../../store/api";
+import { showError } from "../../../components/Toaster";
+import { handleApiError } from "../../../store/utils";
+import Loading from "../../../components/Loading";
 
 export default function Tab() {
-  const [me, setMe] = useState({
-    userId: "66309f8691d019ed240c646f",
-    nickname: "Rainbow",
-    email: "rainbow@gmail.com",
-    preferredGenres: ["novel", "science"],
-    avatar: "Profile1.png",
-  });
+  const { data, error } = api.useGetMeQuery();
+  const [isLoading, setIsLoading] = useState(true);
+  const [me, setMe] = useState(null);
   const { i18n } = useTranslation();
   const { signOut } = useSession();
+
+  useEffect(() => {
+    if (!error) return;
+    console.log(error);
+    if (error.status === 401) {
+      showError(i18n.t("auth.expired"));
+      router.replace("/auth");
+    } else {
+      handleApiError(error, i18n);
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (!data || !data.success) return;
+    setMe(data.data);
+    setIsLoading(false);
+  }, [data]);
 
   const handleLogout = () => {
     // Implement log out
@@ -46,6 +63,8 @@ export default function Tab() {
       i18n.changeLanguage("en");
     }
   };
+
+  if (isLoading) return <Loading />;
 
   return (
     <View style={{ padding: 20, gap: 16, flex: 1 }}>

@@ -1,26 +1,46 @@
 import { View, Text, TouchableOpacity, Image, TextInput } from "react-native";
 import PageHeader from "../../../components/PageHeader";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getAvatarUrl } from "../../../components/users/Avatar";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 import FormData from "form-data";
 import { showError, showInfo } from "../../../components/Toaster";
+import { api } from "../../../store/api";
+import Loading from "../../../components/Loading";
 
 export default function Tab() {
+  const { data, error: meError } = api.useGetMeQuery();
+  const [editProfile, { error: editError, isLoading: isEditLoading }] =
+    api.useEditProfileMutation();
+  const [isLoading, setIsLoading] = useState(true);
   const { i18n } = useTranslation();
 
-  const [profile, setProfile] = useState({
-    userId: "66309f8691d019ed240c646f",
-    nickname: "Rainbow",
-    email: "rainbow@gmail.com",
-    preferredGenres: ["novel", "science"],
-    avatar: "Profile1.png",
-  });
-  const [text, setText] = useState(profile.nickname);
+  const [profile, setProfile] = useState(null);
+  const [text, setText] = useState(null);
   const [newAvatar, setNewAvatar] = useState(null);
+
+  useEffect(() => {
+    const error = meError || editError;
+    if (!error) return;
+    if (error.status === 401) {
+      showError(i18n.t("auth.expired"));
+      router.replace("/auth");
+    } else {
+      handleApiError(error, i18n);
+    }
+  }, [meError, editError]);
+
+  useEffect(() => {
+    if (!data || !data.success) return;
+    const user = data.data;
+    console.log(user);
+    setProfile(user);
+    setText(user.nickname);
+    setIsLoading(false);
+  }, [data]);
 
   const handleSave = () => {
     if (!text || text.length < 3) {
@@ -58,6 +78,8 @@ export default function Tab() {
       return;
     }
   };
+
+  if (isLoading) return <Loading />;
 
   return (
     <View

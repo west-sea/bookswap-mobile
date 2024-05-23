@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Pressable } from "react-native";
-import { genres } from "../../api/constants";
+import { genres } from "../../old-api/constants";
 import { useTranslation } from "react-i18next";
 
 export default function GenreSelector({

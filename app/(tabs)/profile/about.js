@@ -90,7 +90,7 @@ export default function Tab() {
         </Text>
         {/* Members */}
         <View style={{ flexDirection: "row", gap: 12 }}>
-          {["Alisher", "서해린", "정세준", "함창수"].map((name, i) => (
+          {["Alisher Ortiqov", "서해린", "정세준", "함창수"].map((name, i) => (
             <Text
               key={i}
               style={{

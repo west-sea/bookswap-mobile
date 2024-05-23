@@ -6,15 +6,16 @@ import ImageSelector, {
 import GenreSelector from "../../components/input/GenreSelector";
 import InputText from "../../components/input/InputText";
 import { router, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
-import api from "../../api";
-import { getErrorMessage } from "../../api/error-codes";
+import { useEffect, useState } from "react";
 import { showError } from "../../components/Toaster";
 import FormData from "form-data";
 import { useSession } from "../../contexts/auth.ctx";
 import { useTranslation } from "react-i18next";
+import { api } from "../../store/api";
+import { handleApiError, getErrorMessage } from "../../store/utils";
 
 export default function BoardingPage() {
+  const [board, { error, isLoading }] = api.useBoardMutation();
   const params = useLocalSearchParams();
   const [nickname, setNickname] = useState(
     params?.email.toLowerCase().split("@")[0] || "booklover"
@@ -25,6 +26,11 @@ export default function BoardingPage() {
   const [isGenreView, setIsGenreView] = useState(false);
   const { signIn } = useSession();
   const i18n = useTranslation();
+
+  useEffect(() => {
+    if (!error) return;
+    handleApiError(error, i18n);
+  }, [error]);
 
   const onNicknameChange = (nickname) => {
     setNickname(nickname ? nickname.trim() : "");
@@ -43,41 +49,46 @@ export default function BoardingPage() {
   };
 
   const onBoardComplete = async () => {
-    const data = new FormData();
-    data.append("nickname", nickname);
-    data.append("email", params?.email);
-    data.append("userId", params?.userId);
-    data.append("preferredGenres", JSON.stringify(preferredGenres));
-    let avatarImage = {};
-    if (typeof avatar === "string") {
-      const filename = avatar.split("/").pop();
-      let match = /\.(\w+)$/.exec(filename);
-      let type = match ? `image/${match[1]}` : `image`;
-      avatarImage = {
-        uri: avatar,
-        name: filename,
-        type,
-      };
-    } else {
-      const defaultAvatar = defaultAvatars.find((item) => item.id === avatar);
-      avatarImage = defaultAvatar.filename;
+    try {
+      // Data preparation
+      const formData = new FormData();
+      formData.append("nickname", nickname);
+      formData.append("email", params?.email);
+      formData.append("userId", params?.userId);
+      formData.append("preferredGenres", JSON.stringify(preferredGenres));
+      let avatarImage = {};
+      if (typeof avatar === "string") {
+        const filename = avatar.split("/").pop();
+        let match = /\.(\w+)$/.exec(filename);
+        let type = match ? `image/${match[1]}` : `image`;
+        avatarImage = {
+          uri: avatar,
+          name: filename,
+          type,
+        };
+      } else {
+        const defaultAvatar = defaultAvatars.find((item) => item.id === avatar);
+        avatarImage = defaultAvatar.filename;
+      }
+      formData.append("avatar", avatarImage);
+      // Data submission
+      let { data } = await board(formData);
+      if (!data || !data.success) throw new Error();
+      data = data.data;
+      signIn(data.token, data.user);
+      router.push({
+        pathname: "/auth/welcome",
+        params: {
+          name: params?.name,
+        },
+      });
+    } catch (error) {
+      if (!error) {
+        showError(i18n.t("errors.UNKNOWN_ERROR"));
+      } else {
+        showError(getErrorMessage(error.code, i18n));
+      }
     }
-    data.append("avatar", avatarImage);
-    const result = await api.auth.board(data);
-    // const result = { code: 0 };
-    if (!result || result?.code || !result?.token) {
-      // IF error, handle error
-      const message = getErrorMessage(result.code, i18n);
-      showError(message);
-      return;
-    }
-    signIn(result.token);
-    router.push({
-      pathname: "/auth/welcome",
-      params: {
-        name: params?.name,
-      },
-    });
   };
 
   return (
@@ -126,7 +137,7 @@ export default function BoardingPage() {
           <Button
             label={i18n.t("boarding.complete")}
             onPress={onBoardComplete}
-            disabled={preferredGenres.length === 0}
+            disabled={preferredGenres.length === 0 || isLoading}
           />
         ) : (
           <Button

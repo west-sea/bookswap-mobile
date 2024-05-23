@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
 import { statusCodes } from "@react-native-google-signin/google-signin";
 import GradientBackground from "../../components/brand/GradientBackground";
@@ -9,17 +9,23 @@ import { router } from "expo-router";
 import { useSession } from "../../contexts/auth.ctx";
 import { useGoogleAuth } from "../../hooks/useGoogleAuth";
 import GoogleSignInButton from "../../components/buttons/GoogleSignInButton";
-import api from "../../api";
-import { getErrorMessage } from "../../api/error-codes";
 import { showError } from "../../components/Toaster";
 import { useTranslation } from "react-i18next";
 import { Ionicons } from "@expo/vector-icons";
+import { api } from "../../store/api";
+import { handleApiError } from "../../store/utils";
 
 export default function Page() {
+  const [login, { error }] = api.useLoginMutation();
   const [isSigningIn, setIsSigningIn] = useState(false);
   const { signIn } = useSession();
   const signInWithGoogle = useGoogleAuth();
   const { i18n } = useTranslation();
+
+  useEffect(() => {
+    if (!error) return;
+    handleApiError(error, i18n);
+  }, [error]);
 
   const switchLanguage = () => {
     if (i18n.language === "en") {
@@ -31,21 +37,19 @@ export default function Page() {
 
   const onGoogleAuth = async () => {
     setIsSigningIn(true);
-    const result = await signInWithGoogle();
-    if (result?.userInfo) {
+    try {
+      const result = await signInWithGoogle();
+      if (!result || !result.userInfo) {
+        throw result.error || new Error();
+      }
       const { idToken, user } = result.userInfo;
       const { email, name } = user;
       // send login request to server
-      const data = await api.auth.login(idToken);
-      if (!data || data?.code) {
-        // IF error, handle error
-        const message = getErrorMessage(data.code, i18n);
-        showError(message);
-        setIsSigningIn(false);
-        return;
-      }
+      let { data } = await login({ token: idToken });
+      if (!data || !data.success) throw new Error();
+      // IF user is not registered, go to boarding page with boardingData
+      data = data.data;
       if (data.boarding === true) {
-        // IF user is not registered, go to boarding page with boardingData
         router.push({
           pathname: "/auth/boarding",
           params: {
@@ -56,7 +60,7 @@ export default function Page() {
         });
       } else {
         // IF successful, store token in session and go to welcome page
-        signIn(data.token);
+        signIn(data.token, data.user);
         router.replace({
           pathname: "/auth/welcome",
           params: {
@@ -64,15 +68,10 @@ export default function Page() {
           },
         });
       }
-      setIsSigningIn(false);
-    }
-    if (!result) {
-      showError(i18n.t("errors.UNKNOWN_ERROR"));
-      setIsSigningIn(false);
-    }
-    if (result.error) {
-      // TODO: Handle error
-      const error = result.error;
+    } catch (error) {
+      if (!error) {
+        showError(i18n.t("errors.UNKNOWN_ERROR"));
+      }
       const errorCode = error.code;
       switch (errorCode) {
         case statusCodes.SIGN_IN_CANCELLED:
@@ -87,8 +86,8 @@ export default function Page() {
         default:
           showError(i18n.t("errors.SIGN_IN_ERROR"));
       }
-      setIsSigningIn(false);
     }
+    setIsSigningIn(false);
   };
 
   return (

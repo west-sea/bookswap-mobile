@@ -1,7 +1,8 @@
 {
   "auth": {
     "googleSignIn": "Sign in with Google",
-    "switchLanguage": "Switch language"
+    "switchLanguage": "Switch language",
+    "expired": "Your session has expired. Please sign in again."
   },
   "boarding": {
     "welcome": "Welcome to BookSwap!",

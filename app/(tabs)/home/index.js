@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Octicons } from "@expo/vector-icons";
 import { View, Text, FlatList, Pressable } from "react-native";
-import { genres } from "../../../api/constants";
+import { genres } from "../../../old-api/constants";
 import BookItem from "../../../components/book/BookItem";
 import { useTranslation } from "react-i18next";
 

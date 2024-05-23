@@ -1,11 +1,13 @@
 import React from "react";
 import { useStorageState } from "../hooks/useStorageState";
+import { signIn, signOut } from "../store/auth";
+import { useDispatch } from "react-redux";
 
 const AuthContext = React.createContext({
   signIn: () => null,
   signOut: () => null,
   token: null,
-  isLoading: false,
+  user: null,
 });
 
 export function useSession() {
@@ -20,19 +22,25 @@ export function useSession() {
 
 export function SessionProvider(props) {
   const [[isLoading, session], setSession] = useStorageState("session");
+  const [[_, user], setUser] = useStorageState("user");
+  const dispatch = useDispatch();
 
   return (
     <AuthContext.Provider
       value={{
-        signIn: (token) => {
+        signIn: (token, user) => {
           // Perform sign-in logic here
+          dispatch(signIn({ token, user }));
           setSession(token);
+          setUser(JSON.stringify(user));
         },
         signOut: () => {
           // Perform sign-out logic here
+          dispatch(signOut());
           setSession(null);
         },
         token: session,
+        user,
         isLoading,
       }}
     >
