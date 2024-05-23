@@ -62,6 +62,15 @@
   "editGenres": {
     "title": "Edit Preferred Genres"
   },
+  "myRequests": {
+    "title": "My Requests",
+    "empty": "You haven't requested any books yet...",
+    "empty-feedback": "Try requesting books you want to read",
+    "requested": "Requested",
+    "reserved": "Approved",
+    "archived": "Reserved by other",
+    "exchanged": "Exchanged"
+  },
   "notifications": {
     "header": "Notifications",
     "empty": "You have no notifications.",
