@@ -155,6 +155,10 @@
       "coverCancel": "You didn't select any image."
     }
   },
+  "editBook": {
+    "title": "Edit book",
+    "save": "Save"
+  },
   "about": {
     "title": "Welcome to Our Book-Sharing Platform!",
     "description": "Thank you for joining us in enhancing KAIST's reading culture through our new software. This platform aims to broaden your book options beyond the library's offerings, making it easier to find and share reading materials.",

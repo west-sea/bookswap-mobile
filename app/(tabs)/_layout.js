@@ -169,6 +169,16 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
+          name="bookshelf/edit"
+          options={{
+            href: null,
+            tabBarStyle: {
+              display: "none",
+            },
+            headerShown: false,
+          }}
+        />
+        <Tabs.Screen
           name="profile/index"
           options={{
             title: i18n.t("tabs.profile"),
