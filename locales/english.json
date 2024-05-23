@@ -96,6 +96,12 @@
     "shownTo": "Shown to {{count}} people",
     "options": "Choose an option"
   },
+  "requests": {
+    "title": "Requests",
+    "select": "Select the user you want to exchange with",
+    "count": "{{count}} requests",
+    "selectUser": "Select"
+  },
   "history": {
     "header": "History",
     "empty": "You did not participate in any exchange yet...",
