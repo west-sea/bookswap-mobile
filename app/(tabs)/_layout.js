@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import {
   Ionicons,
   MaterialCommunityIcons,
   FontAwesome5,
 } from "@expo/vector-icons";
-import { Redirect, Tabs } from "expo-router";
+import { Redirect, Tabs, router } from "expo-router";
 import HomeHeader from "../../components/home/HomeHeader";
 import BookSwapTitle from "../../assets/svg/brand/Type.svg";
 import { Pressable } from "react-native";
@@ -19,24 +19,29 @@ import { signIn } from "../../store/auth";
 export default function TabLayout() {
   const { i18n } = useTranslation();
   const authState = useSelector((state) => state.auth);
+  const { isLoading, token } = useSession();
   const dispatch = useDispatch();
-  const { isLoading, token, user } = useSession();
+
+  useEffect(() => {
+    if (isLoading) return;
+    if (!authState.token) {
+      // try loading from storage
+      if (token) {
+        dispatch(
+          signIn({
+            token,
+          })
+        );
+      } else {
+        router.replace("/auth");
+      }
+    }
+  }, [isLoading]);
 
   if (isLoading) return <Splash />;
 
-  if (!authState.token) {
+  if (!token) {
     return <Redirect href="/auth" />;
-    // try loading from storage
-    // if (token) {
-    //   dispatch(
-    //     signIn({
-    //       token,
-    //       user: JSON.parse(user),
-    //     })
-    //   );
-    // } else {
-    //   return <Redirect href="/auth" />;
-    // }
   }
 
   return (

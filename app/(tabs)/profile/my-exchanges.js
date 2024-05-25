@@ -1,53 +1,38 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View, Text, FlatList, TouchableOpacity, Image } from "react-native";
 import PageHeader from "../../../components/PageHeader";
 import { useTranslation } from "react-i18next";
-import BookItem from "../../../components/book/BookItem";
 import { Entypo, Ionicons, Octicons } from "@expo/vector-icons";
 import dayjs from "dayjs";
 import { router } from "expo-router";
 import { getAvatarUrl } from "../../../components/users/Avatar";
+import { api } from "../../../store/api";
+import Loading from "../../../components/Loading";
+import { handleApiError } from "../../../store/utils";
+import { showError } from "../../../components/Toaster";
 
 export default function Tab() {
-  const mockRequests = [
-    {
-      exchangeId: "66309f8691d019ed240c646f",
-      offeredBook: {
-        title: "A Little Life",
-        author: "Yanagihara Hanya",
-        genre: "Novel",
-        cover: "028e43d0783530373609309002fa405e.png",
-        createdAt: "2024-05-03T12:42:18.179+00:00",
-      },
-      status: "REQUESTED",
-    },
-    {
-      exchangeId: "66309f8691d019ed240c646f",
-      offeredBook: {
-        title: "A Little Life",
-        author: "Yanagihara Hanya",
-        genre: "Novel",
-        cover: "028e43d0783530373609309002fa405e.png",
-        createdAt: "2024-05-03T12:42:18.179+00:00",
-      },
-      status: "REQUESTED",
-    },
-    {
-      exchangeId: "66309f8691d019ed240c646f",
-      offeredBook: {
-        title: "A Little Life",
-        author: "Yanagihara Hanya",
-        genre: "Novel",
-        cover: "028e43d0783530373609309002fa405e.png",
-        createdAt: "2024-05-03T12:42:18.179+00:00",
-      },
-      status: "REQUESTED",
-    },
-  ];
-
+  const { data, error, isLoading } = api.useGetMyExchangesQuery();
   const { i18n } = useTranslation();
 
-  const [requests, setRequests] = useState(mockRequests);
+  const [requests, setRequests] = useState([]);
+
+  useEffect(() => {
+    if (!error) return;
+    if (error.status === 401) {
+      showError(i18n.t("auth.expired"));
+      router.replace("/auth");
+    } else {
+      handleApiError(error, i18n);
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (!data || !data.success) return;
+    setRequests(data.data.exchanges);
+  }, []);
+
+  if (isLoading) return <Loading />;
 
   return (
     <View>

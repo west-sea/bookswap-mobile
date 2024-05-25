@@ -10,6 +10,7 @@ import FormData from "form-data";
 import { showError, showInfo } from "../../../components/Toaster";
 import { api } from "../../../store/api";
 import Loading from "../../../components/Loading";
+import { getErrorMessage, handleApiError } from "../../../store/utils";
 
 export default function Tab() {
   const { data, error: meError } = api.useGetMeQuery();
@@ -36,33 +37,41 @@ export default function Tab() {
   useEffect(() => {
     if (!data || !data.success) return;
     const user = data.data;
-    console.log(user);
     setProfile(user);
     setText(user.nickname);
     setIsLoading(false);
   }, [data]);
 
-  const handleSave = () => {
-    if (!text || text.length < 3) {
-      showError(i18n.t("editProfile.nickname-invalid"));
-      return;
+  const handleSave = async () => {
+    setIsLoading(true);
+    try {
+      if (!text || text.length < 3) {
+        showError(i18n.t("editProfile.nickname-invalid"));
+        return;
+      }
+      const formData = new FormData();
+      formData.append("nickname", text);
+      let avatarImage = {};
+      if (typeof newAvatar === "string") {
+        const filename = newAvatar.split("/").pop();
+        let match = /\.(\w+)$/.exec(filename);
+        let type = match ? `image/${match[1]}` : `image`;
+        avatarImage = {
+          uri: newAvatar,
+          name: filename,
+          type,
+        };
+        formData.append("avatar", avatarImage);
+      }
+
+      // Data submission
+      const { data } = await editProfile(formData);
+      if (!data || !data.success) throw new Error();
+      router.back();
+    } catch (error) {
+      showError(getErrorMessage(error.code, i18n));
     }
-    const data = new FormData();
-    data.append("nickname", text);
-    let avatarImage = {};
-    if (typeof newAvatar === "string") {
-      const filename = newAvatar.split("/").pop();
-      let match = /\.(\w+)$/.exec(filename);
-      let type = match ? `image/${match[1]}` : `image`;
-      avatarImage = {
-        uri: newAvatar,
-        name: filename,
-        type,
-      };
-      data.append("avatar", avatarImage);
-    }
-    console.log(data);
-    router.back();
+    setIsLoading(false);
   };
 
   const handleImageUpload = async () => {

@@ -1,32 +1,60 @@
-import { View, Text, TouchableOpacity, Image, TextInput } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import PageHeader from "../../../components/PageHeader";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
-import { getAvatarUrl } from "../../../components/users/Avatar";
-import { Ionicons } from "@expo/vector-icons";
+import { useEffect, useState } from "react";
 import { router } from "expo-router";
-import * as ImagePicker from "expo-image-picker";
 import FormData from "form-data";
 import { showInfo } from "../../../components/Toaster";
 import GenreSelector from "../../../components/input/GenreSelector";
+import { api } from "../../../store/api";
+import Loading from "../../../components/Loading";
+import { handleApiError } from "../../../store/utils";
 
 export default function Tab() {
+  const { data, error: meError } = api.useGetMeQuery();
+  const [editProfile, { error: editError, isLoading: isEditLoading }] =
+    api.useEditProfileMutation();
+  const [isLoading, setIsLoading] = useState(true);
   const { i18n } = useTranslation();
 
-  const [profile, setProfile] = useState({
-    userId: "66309f8691d019ed240c646f",
-    nickname: "Rainbow",
-    email: "rainbow@gmail.com",
-    preferredGenres: ["novel", "science"],
-    avatar: "Profile1.png",
-  });
-  const [genres, setGenres] = useState(profile.preferredGenres);
+  const [genres, setGenres] = useState([]);
 
-  const handleSave = () => {
-    const data = new FormData();
-    data.append("preferredGenres", genres);
-    console.log(data);
-    router.back();
+  useEffect(() => {
+    const error = meError || editError;
+    if (!error) return;
+    if (error.status === 401) {
+      showError(i18n.t("auth.expired"));
+      router.replace("/auth");
+    } else {
+      handleApiError(error, i18n);
+    }
+  }, [meError, editError]);
+
+  useEffect(() => {
+    if (!data || !data.success) return;
+    const user = data.data;
+    setGenres(user.preferredGenres);
+    setIsLoading(false);
+  }, [data]);
+
+  const handleSave = async () => {
+    if (!genres || genres.length === 0) {
+      showInfo(i18n.t("editGenres.no-genres"));
+      return;
+    }
+    setIsLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append("preferredGenres", genres);
+
+      // Data submission
+      const { data } = await editProfile(formData);
+      if (!data || !data.success) throw new Error();
+      router.back();
+    } catch (error) {
+      showError(getErrorMessage(error.code, i18n));
+    }
+    setIsLoading(false);
   };
 
   const handleGenreSelect = (genre) => {
@@ -38,6 +66,8 @@ export default function Tab() {
       }
     });
   };
+
+  if (isLoading) return <Loading />;
 
   return (
     <View

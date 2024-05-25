@@ -7,7 +7,6 @@ const AuthContext = React.createContext({
   signIn: () => null,
   signOut: () => null,
   token: null,
-  user: null,
 });
 
 export function useSession() {
@@ -22,17 +21,15 @@ export function useSession() {
 
 export function SessionProvider(props) {
   const [[isLoading, session], setSession] = useStorageState("session");
-  const [[_, user], setUser] = useStorageState("user");
   const dispatch = useDispatch();
 
   return (
     <AuthContext.Provider
       value={{
-        signIn: (token, user) => {
+        signIn: (token) => {
           // Perform sign-in logic here
-          dispatch(signIn({ token, user }));
+          dispatch(signIn({ token }));
           setSession(token);
-          setUser(JSON.stringify(user));
         },
         signOut: () => {
           // Perform sign-out logic here
@@ -40,7 +37,6 @@ export function SessionProvider(props) {
           setSession(null);
         },
         token: session,
-        user,
         isLoading,
       }}
     >

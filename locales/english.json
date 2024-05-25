@@ -61,7 +61,8 @@
     "nickname-invalid": "Nickname must be at least 3 characters long."
   },
   "editGenres": {
-    "title": "Edit Preferred Genres"
+    "title": "Edit Preferred Genres",
+    "no-genres": "You haven't chosen any genres yet..."
   },
   "myRequests": {
     "title": "My Requests",

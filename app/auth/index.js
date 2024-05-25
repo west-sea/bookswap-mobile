@@ -71,20 +71,22 @@ export default function Page() {
     } catch (error) {
       if (!error) {
         showError(i18n.t("errors.UNKNOWN_ERROR"));
-      }
-      const errorCode = error.code;
-      switch (errorCode) {
-        case statusCodes.SIGN_IN_CANCELLED:
-          showError(i18n.t("errors.SIGN_IN_CANCELLED"));
-          break;
-        case statusCodes.IN_PROGRESS:
-          showError(i18n.t("errors.SIGN_IN_IN_PROGRESS"));
-          break;
-        case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
-          showError(i18n.t("errors.SIGN_IN_NOT_SUPPORTED"));
-          break;
-        default:
-          showError(i18n.t("errors.SIGN_IN_ERROR"));
+        return;
+      } else {
+        const errorCode = error.code;
+        switch (errorCode) {
+          case statusCodes.SIGN_IN_CANCELLED:
+            showError(i18n.t("errors.SIGN_IN_CANCELLED"));
+            break;
+          case statusCodes.IN_PROGRESS:
+            showError(i18n.t("errors.SIGN_IN_IN_PROGRESS"));
+            break;
+          case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
+            showError(i18n.t("errors.SIGN_IN_NOT_SUPPORTED"));
+            break;
+          default:
+            showError(i18n.t("errors.SIGN_IN_ERROR"));
+        }
       }
     }
     setIsSigningIn(false);
