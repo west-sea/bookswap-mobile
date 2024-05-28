@@ -23,6 +23,7 @@ export default function Tab() {
   const [text, setText] = useState(null);
   const [newAvatar, setNewAvatar] = useState(null);
 
+  // Error handler
   useEffect(() => {
     const error = meError || editError;
     if (!error) return;
@@ -34,6 +35,7 @@ export default function Tab() {
     }
   }, [meError, editError]);
 
+  // Initial data loader
   useEffect(() => {
     if (!data || !data.success) return;
     const user = data.data;
@@ -88,7 +90,7 @@ export default function Tab() {
     }
   };
 
-  if (isLoading) return <Loading />;
+  if (isLoading || isEditLoading) return <Loading />;
 
   return (
     <View

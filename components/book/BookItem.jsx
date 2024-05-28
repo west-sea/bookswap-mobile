@@ -5,6 +5,8 @@ import { useTranslation } from "react-i18next";
 import { Text, TouchableOpacity, View, Image } from "react-native";
 import { getAvatarUrl } from "../users/Avatar";
 
+export const capitalize = (text) => text.charAt(0).toUpperCase() + text.slice(1);
+
 export default function BookItem({ book }) {
   const isAvailable = book.status === "AVAILABLE" && !book.exchangeId;
   const isRequested = book.status === "AVAILABLE" && book.exchangeId;

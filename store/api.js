@@ -4,7 +4,7 @@ const baseUrl = process.env.EXPO_PUBLIC_API_BASE_URL;
 
 export const api = createApi({
   reducerPath: "api",
-  tagTypes: ["user", "exchanges"],
+  tagTypes: ["user", "exchanges", "books"],
   baseQuery: fetchBaseQuery({
     baseUrl,
     prepareHeaders: (headers, { getState }) => {
@@ -53,6 +53,52 @@ export const api = createApi({
     getMyExchanges: builder.query({
       query: () => "exchanges/my",
       providesTags: ["exchanges"],
+    }),
+    uploadBook: builder.mutation({
+      query: (body) => ({
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        url: "books/upload",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["books"],
+    }),
+    getMyBookshelf: builder.query({
+      query: () => "books/bookshelf/my",
+      providesTags: ["books"],
+    }),
+    deleteBook: builder.mutation({
+      query: (id) => ({
+        url: `books/${id}/delete`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["books"],
+    }),
+    getBook: builder.query({
+      query: (id) => `books/${id}`,
+      providesTags: ["books"],
+    }),
+    editBook: builder.mutation({
+      query: ({ id, body }) => ({
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        url: `books/${id}/edit`,
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: ["books"],
+    }),
+    searchUsers: builder.mutation({
+      query: (text) => ({
+        url: `users/search`,
+        params: {
+          text,
+        },
+        method: "GET",
+      }),
     }),
   }),
 });

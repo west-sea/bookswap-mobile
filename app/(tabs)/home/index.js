@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Octicons } from "@expo/vector-icons";
 import { View, Text, FlatList, Pressable } from "react-native";
 import { genres } from "../../../old-api/constants";
-import BookItem from "../../../components/book/BookItem";
+import BookItem, { capitalize } from "../../../components/book/BookItem";
 import { useTranslation } from "react-i18next";
 
 export default function Tab() {
@@ -183,9 +183,6 @@ function NoBooksFound() {
 function Genre({ genre, isSelected, onSelect }) {
   const { i18n } = useTranslation();
   const genreText = i18n.t(`genres.${genre.toLowerCase()}`);
-
-  const capitalize = (text) => text.charAt(0).toUpperCase() + text.slice(1);
-
   return (
     <Pressable onPress={onSelect}>
       <Text

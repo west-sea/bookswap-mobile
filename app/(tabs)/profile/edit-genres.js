@@ -67,7 +67,7 @@ export default function Tab() {
     });
   };
 
-  if (isLoading) return <Loading />;
+  if (isLoading || isEditLoading) return <Loading />;
 
   return (
     <View

@@ -8,13 +8,16 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { getAvatarUrl } from "../users/Avatar";
-import { showInfo } from "../Toaster";
+import { showError, showInfo } from "../Toaster";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import GenreSelector from "../input/GenreSelector";
 import OptionsModal from "./Modal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
+import { api } from "../../store/api";
+import { router } from "expo-router";
+import { getErrorMessage, handleApiError } from "../../store/utils";
 
 export default function BookForm({
   states: { cover, title, author, genre, visibility, exceptions },
@@ -79,11 +82,7 @@ function CoverField({ cover, onChange }) {
         <View>
           {cover ? (
             <Image
-              src={
-                cover.startsWith("file://")
-                  ? cover
-                  : getAvatarUrl(cover)
-              }
+              src={cover.startsWith("file://") ? cover : getAvatarUrl(cover)}
               style={{
                 width: 120,
                 height: 160,
@@ -293,67 +292,34 @@ function ExceptionUser({ user, onRemove }) {
 function UserSelector({ onSelect }) {
   const { i18n } = useTranslation();
   const [text, setText] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
   const [users, setUsers] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
+  const [searchUsers, { isLoading, error }] = api.useSearchUsersMutation();
 
-  const onSearch = () => {
+  useEffect(() => {
+    if (!error) return;
+    if (error.status === 401) {
+      showError(i18n.t("auth.expired"));
+      router.replace("/auth");
+    } else {
+      handleApiError(error, i18n);
+    }
+  }, [error]);
+
+  const onSearch = async () => {
     if (text.length < 3) return;
-    setIsLoading(true);
     // TODO: fetch users from api
-    const mockUsers = [
-      {
-        userId: "66309f8691d019ed240c6464",
-        nickname: "nubzuki",
-        avatar: "Profile1.png",
-      },
-      {
-        userId: "66309f8691d019ed240c6465",
-        nickname: "basketball",
-        avatar: "Profile2.png",
-      },
-      {
-        userId: "66309f8691d019ed240c6466",
-        nickname: "dinosaur",
-        avatar: "Profile3.png",
-      },
-      {
-        userId: "66309f8691d019ed240c6454",
-        nickname: "nubzuki",
-        avatar: "Profile1.png",
-      },
-      {
-        userId: "66309f8691d019ed240c6455",
-        nickname: "basketball",
-        avatar: "Profile2.png",
-      },
-      {
-        userId: "66309f8691d019ed240c6456",
-        nickname: "dinosaur",
-        avatar: "Profile3.png",
-      },
-      {
-        userId: "66309f8691d019ed240c6434",
-        nickname: "nubzuki",
-        avatar: "Profile1.png",
-      },
-      {
-        userId: "66309f8691d019ed240c6435",
-        nickname: "basketball",
-        avatar: "Profile2.png",
-      },
-      {
-        userId: "66309f8691d019ed240c6436",
-        nickname: "dinosaur",
-        avatar: "Profile3.png",
-      },
-    ];
-    const randomLength = Math.floor(Math.random() * 3);
-    setTimeout(() => {
-      // setUsers(mockUsers.slice(0, randomLength));
-      setUsers(mockUsers);
-      setIsLoading(false);
-    }, 2000);
+    try {
+      const { data } = await searchUsers(text);
+      if (!data || !data.success) {
+        showError(i18n.t("errors.UNKNOWN_ERROR"));
+      } else {
+        setUsers(data.data.users);
+      }
+    } catch (error) {
+      showError(getErrorMessage(error.code, i18n));
+    }
   };
 
   const selectUser = (user) => {

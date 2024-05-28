@@ -6,10 +6,20 @@ import PageHeader from "../../../components/PageHeader";
 import BookForm from "../../../components/book/BookForm";
 import FormData from "form-data";
 import { showError } from "../../../components/Toaster";
+import { api } from "../../../store/api";
+import { getErrorMessage, handleApiError } from "../../../store/utils";
+import Loading from "../../../components/Loading";
 
 export default function Tab() {
-  const { i18n } = useTranslation();
   const { bookId } = useLocalSearchParams();
+  const {
+    data,
+    isLoading: isBookLoading,
+    error: bookError,
+  } = api.useGetBookQuery(bookId);
+  const [editBook, { isLoading: isEditLoading, error: editError }] =
+    api.useEditBookMutation();
+  const { i18n } = useTranslation();
 
   const [defaultBook, setDefaultBook] = useState(null);
   const [cover, setCover] = useState(null);
@@ -19,21 +29,32 @@ export default function Tab() {
   const [visibility, setVisibility] = useState("public");
   const [exceptions, setExceptions] = useState([]);
 
+  // Error handler
   useEffect(() => {
-    const mockBook = {
-      title: "A little Life",
-      author: "Yanagihara, Hanya",
-      genre: "Novel",
-      cover: "028e43d0783530373609309002fa405e.png",
-      visibility: "EXCEPTIONAL_PUBLIC",
-      exceptions: ["66309f8691d019ed240c646f", "66309f8691d019ed240c646d"],
+    const error = bookError || editError;
+    if (!error) return;
+    if (error.status === 401) {
+      showError(i18n.t("auth.expired"));
+      router.replace("/auth");
+    } else {
+      handleApiError(error, i18n);
+    }
+  }, [bookError, editError]);
+
+  // Initial data loader
+  useEffect(() => {
+    if (!data || !data.success) return;
+    let { book } = data.data;
+    book = {
+      ...book,
+      cover: book.cover.filename,
     };
-    setDefaultBook(mockBook);
-    setCover(mockBook.cover);
-    setTitle(mockBook.title);
-    setAuthor(mockBook.author);
-    setGenre(mockBook.genre);
-    switch (visibility) {
+    setDefaultBook(book);
+    setCover(book.cover);
+    setTitle(book.title);
+    setAuthor(book.author);
+    setGenre(book.genre);
+    switch (book.visibility) {
       case "PUBLIC":
         setVisibility("public");
         break;
@@ -47,21 +68,11 @@ export default function Tab() {
         setVisibility("private");
         break;
     }
-    if (mockBook.exceptions && mockBook.exceptions.length > 0) {
-      // fetch each user from exception & setExceptions
-      const defaultExceptions = [];
-      for (let e of mockBook.exceptions) {
-        // defaultExceptions.push({
-        //     userId: e,
-        //     username: "John Doe",
-        //     avatar: "https://example.com/avatar.jpg",
-        // });
-      }
-      setExceptions(defaultExceptions);
-    }
-  }, []);
+    setExceptions(book.exceptions);
+  }, [data]);
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    // Validation
     if (!cover) {
       showError(i18n.t("upload.invalid.cover"));
       return;
@@ -82,47 +93,60 @@ export default function Tab() {
       showError(i18n.t("upload.invalid.visibility"));
       return;
     }
-    const data = new FormData();
-    if (cover !== defaultBook.cover) {
-      const filename = cover.split("/").pop();
-      let match = /\.(\w+)$/.exec(filename);
-      let type = match ? `image/${match[1]}` : `image`;
-      const coverImage = {
-        uri: cover,
-        name: filename,
-        type,
-      };
-      data.append("cover", coverImage);
-    }
-    if (title !== defaultBook.title) {
-      data.append("title", title);
-    }
-    if (author !== defaultBook.author) {
-      data.append("author", author);
-    }
-    if (genre !== defaultBook.genre) {
-      data.append("genre", genre);
-    }
-    let visibilityUpdated = visibility.toUpperCase();
-    if (exceptions.length > 0) {
-      if (visibilityUpdated === "PUBLIC") {
-        visibilityUpdated = "EXCEPTIONAL_PUBLIC";
-      } else {
-        visibilityUpdated = "EXCEPTIONAL_PRIVATE";
+    try {
+      // Data preparation
+      const data = new FormData();
+      if (title !== defaultBook.title) {
+        data.append("title", title);
       }
+      if (author !== defaultBook.author) {
+        data.append("author", author);
+      }
+      if (genre !== defaultBook.genre) {
+        data.append("genre", genre);
+      }
+      let visibilityUpdated = visibility.toUpperCase();
+      if (exceptions.length > 0) {
+        if (visibilityUpdated === "PUBLIC") {
+          visibilityUpdated = "EXCEPTIONAL_PUBLIC";
+        } else {
+          visibilityUpdated = "EXCEPTIONAL_PRIVATE";
+        }
+      }
+      if (visibilityUpdated !== defaultBook.visibility) {
+        data.append("visibility", visibilityUpdated);
+      }
+      const exceptionsUpdated = exceptions.map((item) => item.userId);
+      if (exceptions !== defaultBook.exceptions) {
+        data.append("exceptions", exceptionsUpdated.join(","));
+      }
+      if (cover !== defaultBook.cover) {
+        const filename = cover.split("/").pop();
+        let match = /\.(\w+)$/.exec(filename);
+        let type = match ? `image/${match[1]}` : `image`;
+        const coverImage = {
+          uri: cover,
+          name: filename,
+          type,
+        };
+        data.append("cover", coverImage);
+      }
+      if (data._parts.length === 0) {
+        showError(i18n.t("errors.NO_CHANGES"));
+        return;
+      }
+      const { data: apiData } = await editBook({ id: bookId, body: data });
+      if (!apiData || !apiData.success) {
+        showError(i18n.t("errors.UNKNOWN_ERROR"));
+      } else {
+        router.back();
+      }
+    } catch (error) {
+      showError(getErrorMessage(error.code, i18n));
     }
-    if (visibilityUpdated !== defaultBook.visibility) {
-      data.append("visibility", visibilityUpdated);
-    }
-    const exceptionsUpdated = exceptions.map((item) => item.userId);
-    if (exceptionsUpdated !== defaultBook.exceptions) {
-      data.append("exceptions", JSON.stringify(exceptionsUpdated));
-    }
-    console.log(data);
-    // TODO: upload cover and data to server
-    console.log("Saved");
-    router.back();
   };
+
+  if (isBookLoading || isEditLoading) return <Loading />;
 
   return (
     <View>

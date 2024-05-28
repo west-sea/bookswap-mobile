@@ -1,13 +1,19 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import PageHeader from "../../components/PageHeader";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FormData from "form-data";
-import { showError } from "../../components/Toaster";
+import { showError, showSuccess } from "../../components/Toaster";
 import { router } from "expo-router";
 import BookForm from "../../components/book/BookForm";
+import { api } from "../../store/api";
+import { getErrorMessage, handleApiError } from "../../store/utils";
+import Loading from "../../components/Loading";
 
 export default function Tab() {
+  const [uploadBook, { isLoading: isUploadLoading, error }] =
+    api.useUploadBookMutation();
+  const [isLoading, setIsLoading] = useState(false);
   const { i18n } = useTranslation();
 
   const [cover, setCover] = useState(null);
@@ -17,7 +23,19 @@ export default function Tab() {
   const [visibility, setVisibility] = useState("public");
   const [exceptions, setExceptions] = useState([]);
 
-  const handleCreate = () => {
+  // Error handler
+  useEffect(() => {
+    if (!error) return;
+    if (error.status === 401) {
+      showError(i18n.t("auth.expired"));
+      router.replace("/auth");
+    } else {
+      handleApiError(error, i18n);
+    }
+  }, [error]);
+
+  const handleCreate = async () => {
+    // Validation
     if (!cover) {
       showError(i18n.t("upload.invalid.cover"));
       return;
@@ -38,37 +56,53 @@ export default function Tab() {
       showError(i18n.t("upload.invalid.visibility"));
       return;
     }
-    const data = new FormData();
-    const filename = cover.split("/").pop();
-    let match = /\.(\w+)$/.exec(filename);
-    let type = match ? `image/${match[1]}` : `image`;
-    const coverImage = {
-      uri: cover,
-      name: filename,
-      type,
-    };
-    data.append("cover", coverImage);
-    data.append("title", title);
-    data.append("author", author);
-    data.append("genre", genre);
-    let visibilityUpdated = visibility.toUpperCase();
-    if (exceptions.length > 0) {
-      if (visibilityUpdated === "PUBLIC") {
-        visibilityUpdated = "EXCEPTIONAL_PUBLIC";
-      } else {
-        visibilityUpdated = "EXCEPTIONAL_PRIVATE";
+    setIsLoading(true);
+    try {
+      // Data preparation
+      const data = new FormData();
+      const filename = cover.split("/").pop();
+      let match = /\.(\w+)$/.exec(filename);
+      let type = match ? `image/${match[1]}` : `image`;
+      const coverImage = {
+        uri: cover,
+        name: filename,
+        type,
+      };
+      data.append("cover", coverImage);
+      data.append("title", title);
+      data.append("author", author);
+      data.append("genre", genre);
+      let visibilityUpdated = visibility.toUpperCase();
+      if (exceptions.length > 0) {
+        if (visibilityUpdated === "PUBLIC") {
+          visibilityUpdated = "EXCEPTIONAL_PUBLIC";
+        } else {
+          visibilityUpdated = "EXCEPTIONAL_PRIVATE";
+        }
       }
+      data.append("visibility", visibilityUpdated);
+      data.append(
+        "exceptions",
+        exceptions.map((item) => item.userId).join(",")
+      );
+      // Data submission
+      const { data: apiData } = await uploadBook(data);
+      if (!apiData || !apiData.success) throw new Error();
+      showSuccess(i18n.t("upload.success"));
+      router.back();
+      setCover(null);
+      setTitle("");
+      setAuthor("");
+      setGenre(null);
+      setVisibility("public");
+      setExceptions([]);
+    } catch (error) {
+      showError(getErrorMessage(error.code, i18n));
     }
-    data.append("visibility", visibilityUpdated);
-    data.append(
-      "exceptions",
-      JSON.stringify(exceptions.map((item) => item.userId))
-    );
-    console.log(data);
-    // TODO: upload cover and data to server
-    console.log("Created");
-    router.back();
+    setIsLoading(false);
   };
+
+  if (isLoading || isUploadLoading) return <Loading />;
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>

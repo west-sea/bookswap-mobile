@@ -12,9 +12,14 @@ import {
 import { Entypo, Ionicons } from "@expo/vector-icons";
 import dayjs from "dayjs";
 import { getAvatarUrl } from "../users/Avatar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { router } from "expo-router";
 import OptionsModal from "./Modal";
+import { capitalize } from "./BookItem";
+import { api } from "../../store/api";
+import { showError } from "../Toaster";
+import { handleApiError } from "../../store/utils";
+import Loading from "../Loading";
 
 export default function Bookshelf({ books }) {
   return (
@@ -33,6 +38,7 @@ export default function Bookshelf({ books }) {
 }
 
 function MyBookItem({ book }) {
+  const [deleteBook, { isLoading, error }] = api.useDeleteBookMutation();
   const i18n = useTranslation();
 
   const isPrivate = book.visibility === "PRIVATE";
@@ -41,6 +47,17 @@ function MyBookItem({ book }) {
   const isExceptionalPublic = book.visibility === "EXCEPTIONAL_PUBLIC";
 
   const [isModalShown, setIsModalShown] = useState(false);
+
+  // Error handler
+  useEffect(() => {
+    if (!error) return;
+    if (error.status === 401) {
+      showError(i18n.t("auth.expired"));
+      router.replace("/auth");
+    } else {
+      handleApiError(error, i18n);
+    }
+  }, [error]);
 
   const handleSeeRequests = () => {
     setIsModalShown(false);
@@ -62,11 +79,16 @@ function MyBookItem({ book }) {
     });
   };
 
-  const handleDelete = () => {
-    // TODO: Implement delete functionality
+  const handleDelete = async () => {
+    const { data } = await deleteBook(book.bookId);
     setIsModalShown(false);
-    console.log("DElETE");
+    if (!data || !data.success) {
+      showError(i18n.t("bookshelf.delete-error"));
+      return;
+    }
   };
+
+  if (isLoading) return <Loading />;
 
   return (
     <View
@@ -82,7 +104,7 @@ function MyBookItem({ book }) {
         style={{ width: 75, height: 100 }}
       />
       {/* Book info */}
-      <View style={{ gap: 4, justifyContent: "space-around" }}>
+      <View style={{ gap: 4, justifyContent: "space-around", flexGrow: 1 }}>
         {/* Title */}
         <Text style={{ fontWeight: "bold", fontSize: 24 }}>{book.title}</Text>
         {/* Author */}
@@ -95,7 +117,7 @@ function MyBookItem({ book }) {
           </Text>
           <Entypo name="dot-single" size={12} color="#6E7A9F" />
           {/* Genre */}
-          <Text style={{ color: "#6E7A9F" }}>{book.genre}</Text>
+          <Text style={{ color: "#6E7A9F" }}>{capitalize(book.genre)}</Text>
         </View>
         {/* Status */}
         <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>

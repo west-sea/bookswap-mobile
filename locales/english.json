@@ -96,7 +96,8 @@
     "public": "Public",
     "hiddenFrom": "Hidden from {{count}} people",
     "shownTo": "Shown to {{count}} people",
-    "options": "Choose an option"
+    "options": "Choose an option",
+    "delete-error": "There was an error while deleting the book. Please try again later."
   },
   "requests": {
     "title": "Requests",
@@ -125,6 +126,7 @@
   "upload": {
     "title": "Add book",
     "save": "Save",
+    "success": "Book added successfully!",
     "fields": {
       "cover": "Cover",
       "title": "Title",
@@ -180,6 +182,7 @@
     "health": "Health"
   },
   "errors": {
+    "NO_CHANGES": "You haven't made any changes yet.",
     "SIGN_IN_CANCELLED": "You cancelled the sign in process.",
     "SIGN_IN_IN_PROGRESS": "Sign in is already in progress. Please, be patient.",
     "SIGN_IN_NOT_SUPPORTED": "Sign in is not supported in this device. Please, consider another option.",
