@@ -118,7 +118,11 @@ export default function Tab() {
       }
       const exceptionsUpdated = exceptions.map((item) => item.userId);
       if (exceptions !== defaultBook.exceptions) {
-        data.append("exceptions", exceptionsUpdated.join(","));
+        if (exceptions.length > 0) {
+          data.append("exceptions", exceptionsUpdated.join(","));
+        } else {
+          data.append("exceptions", "empty");
+        }
       }
       if (cover !== defaultBook.cover) {
         const filename = cover.split("/").pop();
