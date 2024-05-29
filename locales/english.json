@@ -86,7 +86,8 @@
     "placeholder": "Harry Potter",
     "results": "{{count}} matching books found",
     "empty": "No results found",
-    "empty-feedback": "Try searching for books or authors"
+    "empty-feedback": "Try searching for books or authors",
+    "no-text": "You didn't enter any text to search for."
   },
   "bookshelf": {
     "header": "Available",

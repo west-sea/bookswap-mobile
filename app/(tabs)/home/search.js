@@ -1,6 +1,6 @@
 import { Ionicons, Octicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   View,
@@ -11,55 +11,51 @@ import {
   ActivityIndicator,
 } from "react-native";
 import BookItem from "../../../components/book/BookItem";
+import { api } from "../../../store/api";
+import { showError, showInfo } from "../../../components/Toaster";
+import { getErrorMessage, handleApiError } from "../../../store/utils";
 
 export default function SearchPage() {
-  const mockResults = [
-    {
-      bookId: "66309f8691d019ed240c646f",
-      title: "JUSTICE",
-      author: "Michael J.Sandel",
-      genre: "Philosophy",
-      cover: "028e43d0783530373609309002fa405e.png",
-      createdAt: "2024-02-28T12:42:18.179+00:00",
-      status: "AVAILABLE",
-    },
-    {
-      bookId: "66309f8691d019ed240c646f",
-      title: "JUSTICE",
-      author: "Michael J.Sandel",
-      genre: "Philosophy",
-      cover: "028e43d0783530373609309002fa405e.png",
-      createdAt: "2024-02-28T12:42:18.179+00:00",
-      status: "AVAILABLE",
-    },
-    {
-      bookId: "66309f8691d019ed240c646f",
-      title: "JUSTICE",
-      author: "Michael J.Sandel",
-      genre: "Philosophy",
-      cover: "028e43d0783530373609309002fa405e.png",
-      createdAt: "2024-02-28T12:42:18.179+00:00",
-      status: "AVAILABLE",
-    },
-  ];
-
   const { i18n } = useTranslation();
 
   const [text, setText] = useState("");
+  const [searchQuery, setSearchQuery] = useState(null);
   const [results, setResults] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const {
+    error: searchError,
+    isLoading,
+    data: searchData,
+  } = api.useSearchBooksQuery(searchQuery, {
+    skip: !searchQuery,
+  });
 
-  const handleTextChange = async (text) => {
+  useEffect(() => {
+    const error = searchError;
+    if (!error) return;
+    console.log(error.data.issues);
+    if (error.status === 401) {
+      showError(i18n.t("auth.expired"));
+      router.replace("/auth");
+    } else {
+      handleApiError(error, i18n);
+    }
+  }, [searchError]);
+
+  useEffect(() => {
+    if (!searchData || !searchData.success) return;
+    setResults(searchData.data.books);
+  }, [searchData]);
+
+  const handleTextChange = (text) => {
     setText(text);
   };
 
-  const handleSearch = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      const randomLength = Math.floor(Math.random() * 3);
-      setResults(mockResults.slice(0, randomLength));
-    }, 1000);
+  const handleSearch = async () => {
+    if (!text || text.length < 3) {
+      showInfo(i18n.t("search.no-text"));
+      return;
+    }
+    setSearchQuery(text);
   };
 
   return (

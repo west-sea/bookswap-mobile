@@ -20,7 +20,6 @@ export default function Tab() {
   // Error handler
   useEffect(() => {
     if (!error) return;
-    console.log(error);
     if (error.status === 401) {
       showError(i18n.t("auth.expired"));
       router.replace("/auth");

@@ -37,6 +37,7 @@ export default function Tab() {
 
   useEffect(() => {
     if (!data || !data.success) return;
+    if (!myExchangesData || !myExchangesData.success) return;
     setMe(data.data);
     setRequestsCount(myExchangesData.data.exchanges?.length || 0);
     setIsLoading(false);

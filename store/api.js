@@ -106,5 +106,25 @@ export const api = createApi({
       query: () => "books/feed",
       providesTags: ["books"],
     }),
+    searchBooks: builder.query({
+      query: (text) => ({
+        url: "books/search",
+        params: {
+          text,
+        },
+        method: "GET",
+      }),
+      providesTags: ["books"],
+    }),
+    requestBook: builder.mutation({
+      query: (bookId) => ({
+        url: `exchanges/request`,
+        method: "POST",
+        body: {
+          bookId,
+        },
+      }),
+      invalidatesTags: ["books", "exchanges"],
+    }),
   }),
 });
