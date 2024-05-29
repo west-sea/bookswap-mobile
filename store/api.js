@@ -7,8 +7,10 @@ export const api = createApi({
   tagTypes: ["user", "exchanges", "books"],
   baseQuery: fetchBaseQuery({
     baseUrl,
-    prepareHeaders: (headers, { getState }) => {
+    prepareHeaders: (headers, { getState, endpoint, extra }) => {
       const { auth } = getState();
+      console.log(endpoint, extra);
+      console.log(auth);
       if (auth.token) {
         headers.set("Authorization", `Bearer ${auth.token}`);
       }
@@ -99,6 +101,10 @@ export const api = createApi({
         },
         method: "GET",
       }),
+    }),
+    getFeed: builder.query({
+      query: () => "books/feed",
+      providesTags: ["books"],
     }),
   }),
 });

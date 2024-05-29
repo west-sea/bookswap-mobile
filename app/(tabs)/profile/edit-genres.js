@@ -45,7 +45,8 @@ export default function Tab() {
     setIsLoading(true);
     try {
       const formData = new FormData();
-      formData.append("preferredGenres", genres);
+      formData.append("preferredGenres", genres.join(","));
+      console.log(genres.join(","));
 
       // Data submission
       const { data } = await editProfile(formData);

@@ -183,6 +183,7 @@
   },
   "errors": {
     "NO_CHANGES": "You haven't made any changes yet.",
+    "NO_GENRE_SELECTED": "You should choose a genre",
     "SIGN_IN_CANCELLED": "You cancelled the sign in process.",
     "SIGN_IN_IN_PROGRESS": "Sign in is already in progress. Please, be patient.",
     "SIGN_IN_NOT_SUPPORTED": "Sign in is not supported in this device. Please, consider another option.",

@@ -2,6 +2,8 @@ import React from "react";
 import { useStorageState } from "../hooks/useStorageState";
 import { signIn, signOut } from "../store/auth";
 import { useDispatch } from "react-redux";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import { api } from "../store/api";
 
 const AuthContext = React.createContext({
   signIn: () => null,
@@ -31,10 +33,16 @@ export function SessionProvider(props) {
           dispatch(signIn({ token }));
           setSession(token);
         },
-        signOut: () => {
+        signOut: async () => {
           // Perform sign-out logic here
-          dispatch(signOut());
-          setSession(null);
+          try {
+            await GoogleSignin.signOut();
+            dispatch(signOut());
+            setSession(null);
+            dispatch(api.util.resetApiState());
+          } catch (error) {
+            console.log(error);
+          }
         },
         token: session,
         isLoading,

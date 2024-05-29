@@ -4,104 +4,37 @@ import { View, Text, FlatList, Pressable } from "react-native";
 import { genres } from "../../../old-api/constants";
 import BookItem, { capitalize } from "../../../components/book/BookItem";
 import { useTranslation } from "react-i18next";
+import { api } from "../../../store/api";
+import Loading from "../../../components/Loading";
+import { showError } from "../../../components/Toaster";
+import { router } from "expo-router";
+import { handleApiError } from "../../../store/utils";
 
 export default function Tab() {
-  const mockBooks = [
-    {
-      bookId: "66309f8691d019ed240c646f",
-      title: "A Little Life",
-      author: "Yanagihara Hanya",
-      genre: "Novel",
-      cover: "028e43d0783530373609309002fa405e.png",
-      status: "AVAILABLE",
-      createdAt: "2024-05-03T12:42:18.179+00:00",
-    },
-    {
-      bookId: "66309f8691d019ed240c646f",
-      title: "A Little Life",
-      author: "Yanagihara Hanya",
-      genre: "Novel",
-      cover: "028e43d0783530373609309002fa405e.png",
-      status: "AVAILABLE",
-      createdAt: "2024-05-03T12:42:18.179+00:00",
-      exchangeId: "66309f8691d019ed240c646f",
-    },
-    {
-      bookId: "66309f8691d019ed240c646f",
-      title: "A Little Life",
-      author: "Yanagihara Hanya",
-      genre: "Novel",
-      cover: "028e43d0783530373609309002fa405e.png",
-      status: "AVAILABLE",
-      createdAt: "2024-05-03T12:42:18.179+00:00",
-      exchangeId: "66309f8691d019ed240c646f",
-    },
-    {
-      bookId: "66309f8691d019ed240c646f",
-      title: "A Little Life",
-      author: "Yanagihara Hanya",
-      genre: "Novel",
-      cover: "028e43d0783530373609309002fa405e.png",
-      status: "RESERVED",
-      createdAt: "2024-05-03T12:42:18.179+00:00",
-      exchangeId: "66309f8691d019ed240c646f",
-    },
-    {
-      bookId: "66309f8691d019ed240c646f",
-      title: "A Little Life",
-      author: "Yanagihara Hanya",
-      genre: "Novel",
-      cover: "028e43d0783530373609309002fa405e.png",
-      status: "AVAILABLE",
-      createdAt: "2024-05-03T12:42:18.179+00:00",
-      exchangeId: "66309f8691d019ed240c646f",
-    },
-    {
-      bookId: "66309f8691d019ed240c646f",
-      title: "A Little Life",
-      author: "Yanagihara Hanya",
-      genre: "Novel",
-      cover: "028e43d0783530373609309002fa405e.png",
-      status: "AVAILABLE",
-      createdAt: "2024-05-03T12:42:18.179+00:00",
-      exchangeId: "66309f8691d019ed240c646f",
-    },
-    {
-      bookId: "66309f8691d019ed240c646f",
-      title: "A Little Life",
-      author: "Yanagihara Hanya",
-      genre: "Novel",
-      cover: "028e43d0783530373609309002fa405e.png",
-      status: "AVAILABLE",
-      createdAt: "2024-05-03T12:42:18.179+00:00",
-      exchangeId: "66309f8691d019ed240c646f",
-    },
-    {
-      bookId: "66309f8691d019ed240c646f",
-      title: "A Little Life",
-      author: "Yanagihara Hanya",
-      genre: "Novel",
-      cover: "028e43d0783530373609309002fa405e.png",
-      status: "AVAILABLE",
-      createdAt: "2024-05-03T12:42:18.179+00:00",
-      exchangeId: "66309f8691d019ed240c646f",
-    },
-    {
-      bookId: "66309f8691d019ed240c646f",
-      title: "A Little Life",
-      author: "Yanagihara Hanya",
-      genre: "Novel",
-      cover: "028e43d0783530373609309002fa405e.png",
-      status: "AVAILABLE",
-      createdAt: "2024-05-03T12:42:18.179+00:00",
-      exchangeId: "66309f8691d019ed240c646f",
-    },
-  ];
-
-  const [apiData, setApiData] = useState(mockBooks);
+  const { data, isLoading, error } = api.useGetFeedQuery();
+  const [apiData, setApiData] = useState([]);
   const [books, setBooks] = useState([]);
   const [selectedGenres, setSelectedGenres] = useState([]);
   const { i18n } = useTranslation();
+  
+  // Error handler
+  useEffect(() => {
+    if (!error) return;
+    console.log(error);
+    if (error.status === 401) {
+      showError(i18n.t("auth.expired"));
+      router.replace("/auth");
+    } else {
+      handleApiError(error, i18n);
+    }
+  }, [error]);
+
+  // Initial data loader
+  useEffect(() => {
+    console.log(data);
+    if (!data || !data.success) return;
+    setApiData(data.data.books);
+  }, [data]);
 
   useEffect(() => {
     updateBooks();
@@ -125,6 +58,8 @@ export default function Tab() {
       setSelectedGenres([...selectedGenres, genre]);
     }
   };
+
+  if (isLoading) return <Loading />;
 
   return (
     <View style={{ padding: 12, gap: 12 }}>

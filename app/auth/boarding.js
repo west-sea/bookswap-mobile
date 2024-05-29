@@ -49,13 +49,17 @@ export default function BoardingPage() {
   };
 
   const onBoardComplete = async () => {
+    if (preferredGenres.length === 0) {
+      showError(i18n.t("errors.NO_GENRE_SELECTED"));
+      return;
+    }
     try {
       // Data preparation
       const formData = new FormData();
       formData.append("nickname", nickname);
       formData.append("email", params?.email);
       formData.append("userId", params?.userId);
-      formData.append("preferredGenres", JSON.stringify(preferredGenres));
+      formData.append("preferredGenres", preferredGenres.join(","));
       let avatarImage = {};
       if (typeof avatar === "string") {
         const filename = avatar.split("/").pop();

@@ -5,7 +5,9 @@ import { useTranslation } from "react-i18next";
 import { Text, TouchableOpacity, View, Image } from "react-native";
 import { getAvatarUrl } from "../users/Avatar";
 
-export const capitalize = (text) => text.charAt(0).toUpperCase() + text.slice(1);
+export const capitalize = (text) => {
+  return text.charAt(0).toUpperCase() + text.slice(1);
+};
 
 export default function BookItem({ book }) {
   const isAvailable = book.status === "AVAILABLE" && !book.exchangeId;
@@ -52,7 +54,7 @@ export default function BookItem({ book }) {
           </Text>
           <Entypo name="dot-single" size={12} color="#6E7A9F" />
           {/* Genre */}
-          <Text style={{ color: "#6E7A9F" }}>{book.genre}</Text>
+          <Text style={{ color: "#6E7A9F" }}>{capitalize(book.genre)}</Text>
         </View>
         {/* Status */}
         {isAvailable && (

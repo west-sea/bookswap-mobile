@@ -12,13 +12,20 @@ import { handleApiError } from "../../../store/utils";
 import Loading from "../../../components/Loading";
 
 export default function Tab() {
-  const { data, error } = api.useGetMeQuery();
+  const { data, error: meError } = api.useGetMeQuery();
+  const {
+    data: myExchangesData,
+    error: myExchangesError,
+    isLoading: myExchangesLoading,
+  } = api.useGetMyExchangesQuery();
   const [isLoading, setIsLoading] = useState(true);
   const [me, setMe] = useState(null);
+  const [requestsCount, setRequestsCount] = useState(0);
   const { i18n } = useTranslation();
   const { signOut } = useSession();
 
   useEffect(() => {
+    const error = meError || myExchangesError;
     if (!error) return;
     if (error.status === 401) {
       showError(i18n.t("auth.expired"));
@@ -26,13 +33,14 @@ export default function Tab() {
     } else {
       handleApiError(error, i18n);
     }
-  }, [error]);
+  }, [meError, myExchangesError]);
 
   useEffect(() => {
     if (!data || !data.success) return;
     setMe(data.data);
+    setRequestsCount(myExchangesData.data.exchanges?.length || 0);
     setIsLoading(false);
-  }, [data]);
+  }, [data, myExchangesData]);
 
   const handleLogout = () => {
     // Implement log out
@@ -63,7 +71,7 @@ export default function Tab() {
     }
   };
 
-  if (isLoading) return <Loading />;
+  if (isLoading || myExchangesLoading) return <Loading />;
 
   return (
     <View style={{ padding: 20, gap: 16, flex: 1 }}>
@@ -129,13 +137,13 @@ export default function Tab() {
         <ActionButton
           icon={<FontAwesome5 name="history" size={24} color="black" />}
           label={i18n.t("profile.myExchanges")}
-          badge={3}
+          badge={requestsCount}
           onPress={() => handleAction("profile/my-exchanges")}
         />
         <ActionButton
           icon={<FontAwesome5 name="book" size={24} color="black" />}
           label={i18n.t("profile.preferredGenres")}
-          badge={2}
+          badge={me.preferredGenres?.length || 0}
           onPress={() => handleAction("profile/edit-genres")}
         />
         <ActionButton
@@ -184,7 +192,11 @@ function ActionButton({ icon, label, badge, onPress }) {
         </View>
         <Text>{label}</Text>
       </View>
-      {badge && <Text style={{ fontWeight: "bold" }}>{badge}</Text>}
+      {badge !== null ? (
+        <Text style={{ fontWeight: "bold" }}>{badge}</Text>
+      ) : (
+        <></>
+      )}
     </TouchableOpacity>
   );
 }
