@@ -61,7 +61,6 @@ export default function Page() {
           },
         });
       } else {
-        newErrors.push(`GO TO WELCOME: ${JSON.stringify(data)}`);
         // IF successful, store token in session and go to welcome page
         signIn(data.token, data.user);
         router.replace({
@@ -72,6 +71,7 @@ export default function Page() {
         });
       }
     } catch (error) {
+      console.log(error);
       if (!error) {
         showError(i18n.t("errors.UNKNOWN_ERROR"));
         return;
