@@ -11,7 +11,6 @@ export function useGoogleAuth() {
       const userInfo = await GoogleSignin.signIn();
       return { userInfo };
     } catch (error) {
-      alert("Error: " + error.message);
       return { error };
     }
   };

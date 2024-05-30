@@ -74,6 +74,7 @@ export default function Page() {
         return;
       } else {
         const errorCode = error.code;
+        showError(`Code: ${errorCode}. ${error.message}, ${error}`);
         switch (errorCode) {
           case statusCodes.SIGN_IN_CANCELLED:
             showError(i18n.t("errors.SIGN_IN_CANCELLED"));
@@ -85,7 +86,8 @@ export default function Page() {
             showError(i18n.t("errors.SIGN_IN_NOT_SUPPORTED"));
             break;
           default:
-            showError(i18n.t("errors.SIGN_IN_ERROR"));
+            // showError(i18n.t("errors.SIGN_IN_ERROR"));
+            break;
         }
       }
     }

@@ -37,6 +37,13 @@
             {
               "client_id": "459198849277-7u2fmsi4a8rr0h1obqspvgrg9ed8jnqh.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "459198849277-n011973h13tnp91ojuntb76843gg81ai.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.sss.bookswap"
+              }
             }
           ]
         }
