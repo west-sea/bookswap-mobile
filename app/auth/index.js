@@ -38,6 +38,11 @@ export default function Page() {
 
   const onGoogleAuth = async () => {
     const newErrors = ["START"];
+    newErrors.push("ENV LOADING");
+    newErrors.push(`ENV: ${process.env.EXPO_PUBLIC_FIREBASE_WEB_CLIENT_ID}`);
+    newErrors.push(`ENV: ${process.env.EXPO_PUBLIC_API_BASE_URL}`);
+    newErrors.push(`ENV: ${process.env.EXPO_PUBLIC_API_SOCKET_URL}`);
+    newErrors.push(`ENV LOADED`);
     setIsSigningIn(true);
     try {
       newErrors.push("START TRY");
