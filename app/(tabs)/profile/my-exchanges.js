@@ -99,7 +99,7 @@ function RequestedBookItem({ book, exchangeId, status }) {
       {/* Cover image */}
       <Image
         src={getAvatarUrl(book.cover)}
-        style={{ width: 75, height: 100 }}
+        style={{ width: 75, height: 100, borderRadius: 4 }}
       />
       {/* Book info */}
       <View style={{ gap: 4, justifyContent: "space-around" }}>

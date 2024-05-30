@@ -1,7 +1,7 @@
 import PageHeader from "../../../components/PageHeader";
 import { useTranslation } from "react-i18next";
 import { useLocalSearchParams, router } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Entypo, Ionicons } from "@expo/vector-icons";
 import dayjs from "dayjs";
 import {
@@ -13,9 +13,13 @@ import {
   Modal,
 } from "react-native";
 import { getAvatarUrl } from "../../../components/users/Avatar";
-import { showSuccess } from "../../../components/Toaster";
+import { showError, showSuccess } from "../../../components/Toaster";
 import OptionsModal from "../../../components/book/Modal";
 import SwapSvg from "../../../assets/svg/swap.svg";
+import { api } from "../../../store/api";
+import { getErrorMessage, handleApiError } from "../../../store/utils";
+import Loading from "../../../components/Loading";
+import { capitalize } from "../../../components/book/BookItem";
 
 export default function Tab() {
   const mockBooks = [
@@ -38,13 +42,6 @@ export default function Tab() {
   ];
 
   const params = useLocalSearchParams();
-  const { i18n } = useTranslation();
-
-  const offeredUser = {
-    userId: "my-user-id",
-    nickname: "my nickname",
-    avatar: "Profile1.png",
-  };
   const requestedUser = {
     userId: params.userId,
     nickname: params.nickname,
@@ -54,15 +51,67 @@ export default function Tab() {
     title: params.offeredBookTitle,
     cover: params.offeredBookCover,
   };
-  const [books, setBooks] = useState(mockBooks);
+  const {
+    data: bookshelfData,
+    error: bookshelfError,
+    isLoading: bookshelfLoading,
+  } = api.useGetUserBookshelfQuery(params.userId);
+  const {
+    data: meData,
+    error: meError,
+    isLoading: meLoading,
+  } = api.useGetMeQuery();
+  const [acceptRequest, { error: acceptError, isLoading: acceptLoading }] =
+    api.useAcceptRequestMutation();
+  const { i18n } = useTranslation();
 
-  const handleConfirmation = (bookId) => {
+  const [offeredUser, setOfferedUser] = useState(null);
+  const [books, setBooks] = useState([]);
+
+  // Error handler
+  useEffect(() => {
+    const error = meError || bookshelfError || acceptError;
+    if (!error) return;
+    if (error.status === 401) {
+      showError(i18n.t("auth.expired"));
+      router.replace("/auth");
+    } else {
+      handleApiError(error, i18n);
+    }
+  }, [meError, bookshelfError, acceptError]);
+
+  // Initial data loader
+  useEffect(() => {
+    if (!meData || !meData.success) return;
+    if (!bookshelfData || !bookshelfData.success) return;
+    const me = {
+      userId: meData.data.userId,
+      nickname: meData.data.nickname,
+      avatar: meData.data.avatar,
+    };
+    setOfferedUser(me);
+    setBooks(bookshelfData.data.books);
+  }, [meData, bookshelfData]);
+
+  const handleConfirmation = async (bookId) => {
+    const body = { exchangeId: params.exchangeId, bookId };
+    try {
+      // Data submission
+      const { data } = await acceptRequest(body);
+      if (!data || !data.success) throw new Error();
+      console.log(data);
+      showSuccess(
+        i18n.t("userBookshelf.success", { user: requestedUser.nickname })
+      );
+      router.replace("bookshelf");
+    } catch (error) {
+      showError(getErrorMessage(error.code, i18n));
+    }
     // TODO: send request to api
-    showSuccess(
-      i18n.t("userBookshelf.success", { user: requestedUser.nickname })
-    );
-    router.back();
   };
+
+  if (!offeredUser || meLoading || bookshelfLoading || acceptLoading)
+    return <Loading />;
 
   return (
     <View style={{ backgroundColor: "white", flex: 1 }}>
@@ -126,7 +175,7 @@ function UserBookItem({ book, onConfirm, offeredBook, offeredUser, user }) {
       {/* Cover image */}
       <Image
         src={getAvatarUrl(book.cover)}
-        style={{ width: 75, height: 100 }}
+        style={{ width: 75, height: 100, borderRadius: 4 }}
       />
       {/* Book info */}
       <View style={{ gap: 4, justifyContent: "space-around" }}>
@@ -142,7 +191,7 @@ function UserBookItem({ book, onConfirm, offeredBook, offeredUser, user }) {
           </Text>
           <Entypo name="dot-single" size={12} color="#6E7A9F" />
           {/* Genre */}
-          <Text style={{ color: "#6E7A9F" }}>{book.genre}</Text>
+          <Text style={{ color: "#6E7A9F" }}>{capitalize(book.genre)}</Text>
         </View>
         <View>
           <ActionButton
@@ -175,6 +224,7 @@ function UserBookItem({ book, onConfirm, offeredBook, offeredUser, user }) {
                   style={{
                     width: 75,
                     height: 100,
+                    borderRadius: 4,
                   }}
                 />
                 <Image
@@ -210,6 +260,7 @@ function UserBookItem({ book, onConfirm, offeredBook, offeredUser, user }) {
                   style={{
                     width: 75,
                     height: 100,
+                    borderRadius: 4,
                   }}
                 />
                 <Image

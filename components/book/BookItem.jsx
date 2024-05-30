@@ -68,7 +68,7 @@ export default function BookItem({ book }) {
       {/* Cover image */}
       <Image
         src={getAvatarUrl(book.cover)}
-        style={{ width: 75, height: 100 }}
+        style={{ width: 75, height: 100, borderRadius: 4 }}
       />
       {/* Book info */}
       <View style={{ gap: 4, justifyContent: "space-around" }}>
@@ -94,7 +94,11 @@ export default function BookItem({ book }) {
             textColor={"black"}
             onPress={handleRequest}
             disabled={requestLoading}
-            icon={requestLoading ? <ActivityIndicator color="white" size={16} /> : null}
+            icon={
+              requestLoading ? (
+                <ActivityIndicator color="white" size={16} />
+              ) : null
+            }
           />
         )}
         {isRequested && (

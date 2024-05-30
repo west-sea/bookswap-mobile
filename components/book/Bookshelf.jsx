@@ -91,17 +91,20 @@ function MyBookItem({ book }) {
   if (isLoading) return <Loading />;
 
   return (
-    <View
+    <TouchableOpacity
+      onPress={handleSeeRequests}
       style={{
         flexDirection: "row",
         gap: 16,
-        padding: 4,
+        padding: 8,
+        borderRadius: 4,
+        backgroundColor: "white",
       }}
     >
       {/* Cover image */}
       <Image
         src={getAvatarUrl(book.cover)}
-        style={{ width: 75, height: 100 }}
+        style={{ width: 75, height: 100, borderRadius: 4 }}
       />
       {/* Book info */}
       <View style={{ gap: 4, justifyContent: "space-around", flexGrow: 1 }}>
@@ -166,14 +169,6 @@ function MyBookItem({ book }) {
         onClose={() => setIsModalShown(false)}
       >
         <TouchableOpacity
-          onPress={handleSeeRequests}
-          style={{ paddingHorizontal: 20, paddingVertical: 10 }}
-        >
-          <Text style={{ fontSize: 18, textAlign: "center" }}>
-            See requests
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
           onPress={handleEdit}
           style={{ paddingHorizontal: 20, paddingVertical: 10 }}
         >
@@ -188,7 +183,7 @@ function MyBookItem({ book }) {
           </Text>
         </TouchableOpacity>
       </OptionsModal>
-    </View>
+    </TouchableOpacity>
   );
 }
 

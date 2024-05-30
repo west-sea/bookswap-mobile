@@ -1,60 +1,50 @@
 import { useLocalSearchParams, router } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FlatList, Text, TouchableOpacity, View, Image } from "react-native";
 import PageHeader from "../../../components/PageHeader";
 import { useTranslation } from "react-i18next";
 import { Entypo, Ionicons } from "@expo/vector-icons";
 import dayjs from "dayjs";
 import { getAvatarUrl } from "../../../components/users/Avatar";
+import { api } from "../../../store/api";
+import Loading from "../../../components/Loading";
+import { showError } from "../../../components/Toaster";
+import { handleApiError } from "../../../store/utils";
 
 export default function Tab() {
-  const mockBook = {
-    title: "A Little Life",
-    author: "Yanagihara Hanya",
-    genre: "Novel",
-    cover: "028e43d0783530373609309002fa405e.png",
-    createdAt: "2024-05-03T12:42:18.179+00:00",
-    status: "AVAILABLE",
-  };
-  const mockRequests = [
-    {
-      exchangeId: "66309f8691d019ed240c646f",
-      status: "REQUESTED",
-      createdAt: "2024-05-03T12:42:18.179+00:00",
-      requestedBy: {
-        userId: "66309f8691d019ed240c646f",
-        nickname: "Fox Kim",
-        avatar: "Profile2.png",
-      },
-    },
-    {
-      exchangeId: "66309f8691d019ed240c646f",
-      status: "REQUESTED",
-      createdAt: "2024-05-03T12:42:18.179+00:00",
-      requestedBy: {
-        userId: "66309f8691d019ed240c646f",
-        nickname: "Fox Kim",
-        avatar: "Profile2.png",
-      },
-    },
-    {
-      exchangeId: "66309f8691d019ed240c646f",
-      status: "REQUESTED",
-      createdAt: "2024-05-03T12:42:18.179+00:00",
-      requestedBy: {
-        userId: "66309f8691d019ed240c646f",
-        nickname: "Fox Kim",
-        avatar: "Profile2.png",
-      },
-    },
-  ];
-
   const params = useLocalSearchParams();
-  const { exchangeId } = params;
+  const { bookId } = params;
+  const {
+    data: apiData,
+    error: apiError,
+    isLoading: apiLoading,
+  } = api.useGetBookExchangesQuery(bookId);
+
   const { i18n } = useTranslation();
 
-  const [book, setBook] = useState(mockBook);
-  const [requests, setRequests] = useState(mockRequests);
+  const [book, setBook] = useState(null);
+  const [requests, setRequests] = useState([]);
+
+  // Error handler
+  useEffect(() => {
+    const error = apiError;
+    if (!error) return;
+    if (error.status === 401) {
+      showError(i18n.t("auth.expired"));
+      router.replace("/auth");
+    } else {
+      handleApiError(error, i18n);
+    }
+  }, [apiError]);
+
+  // Initial data loader
+  useEffect(() => {
+    if (!apiData || !apiData.success) return;
+    setBook(apiData.data.book);
+    setRequests(apiData.data.exchanges);
+  }, [apiData]);
+
+  if (!book || apiLoading) return <Loading />;
 
   return (
     <View style={{ backgroundColor: "white", flex: 1 }}>
@@ -104,6 +94,7 @@ function RequestedUser({ exchange, book }) {
     router.push({
       pathname: "bookshelf/user",
       params: {
+        exchangeId: exchange.exchangeId,
         userId: user.userId,
         nickname: user.nickname,
         avatar: user.avatar,
@@ -183,7 +174,7 @@ function BookInfo({ book, count }) {
       {/* Cover image */}
       <Image
         src={getAvatarUrl(book.cover)}
-        style={{ width: 75, height: 100 }}
+        style={{ width: 75, height: 100, borderRadius: 4 }}
       />
       {/* Book info */}
       <View style={{ gap: 4, justifyContent: "space-around" }}>

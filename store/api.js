@@ -126,5 +126,24 @@ export const api = createApi({
       }),
       invalidatesTags: ["books", "exchanges"],
     }),
+    getBookExchanges: builder.query({
+      query: (id) => `exchanges/${id}`,
+      providesTags: ["books", "exchanges"],
+    }),
+    getUserBookshelf: builder.query({
+      query: (id) => `books/bookshelf/${id}`,
+      providesTags: ["books"],
+    }),
+    acceptRequest: builder.mutation({
+      query: ({ bookId, exchangeId }) => ({
+        url: `exchanges/accept`,
+        method: "POST",
+        body: {
+          bookId,
+          exchangeId
+        },
+      }),
+      invalidatesTags: ["books", "exchanges"],
+    }),
   }),
 });
