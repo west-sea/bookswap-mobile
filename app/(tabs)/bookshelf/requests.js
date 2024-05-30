@@ -10,6 +10,7 @@ import { api } from "../../../store/api";
 import Loading from "../../../components/Loading";
 import { showError } from "../../../components/Toaster";
 import { handleApiError } from "../../../store/utils";
+import { capitalize } from "../../../components/book/BookItem";
 
 export default function Tab() {
   const params = useLocalSearchParams();
@@ -190,7 +191,7 @@ function BookInfo({ book, count }) {
           </Text>
           <Entypo name="dot-single" size={12} color="#6E7A9F" />
           {/* Genre */}
-          <Text style={{ color: "#6E7A9F" }}>{book.genre}</Text>
+          <Text style={{ color: "#6E7A9F" }}>{capitalize(book.genre)}</Text>
         </View>
         {/* Status */}
         <ActionButton

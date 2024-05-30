@@ -1,68 +1,53 @@
 import { Ionicons, Octicons } from "@expo/vector-icons";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View, Text, FlatList, Image, TouchableOpacity } from "react-native";
 import { getAvatarUrl } from "../../../components/users/Avatar";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
+import { api } from "../../../store/api";
+import Loading from "../../../components/Loading";
+import { showError } from "../../../components/Toaster";
+import { handleApiError } from "../../../store/utils";
+import { shorten } from "../../../components/book/BookItem";
 
 export default function Tab() {
-  const mockChats = [
-    {
-      exchangeId: "66309f8691d019ed240c646f",
-      offeredBook: {
-        title: "Harry Potter",
-        cover: "028e43d0783530373609309002fa405e.png",
-      },
-      offeredBy: {
-        userId: "66309f8691d019ed240c646f",
-        nickname: "genius",
-        avatar: "Profile1.png",
-      },
-      exchangedBook: {
-        title: "Justice",
-        cover: "028e43d0783530373609309002fa405e.png",
-      },
-      requestedBy: {
-        userId: "66309f8691d019ed240c646f",
-        nickname: "fool",
-        avatar: "Profile2.jpg",
-      },
-      // latestMessage: {
-      //   text: "Bye bye",
-      //   createdAt: "2024-05-21T12:42:18.179+00:00",
-      //   seen: false,
-      // },
-    },
-    {
-      exchangeId: "66309f8691d019ed240c646f",
-      offeredBook: {
-        title: "Harry Potter",
-        cover: "028e43d0783530373609309002fa405e.png",
-      },
-      offeredBy: {
-        userId: "66309f8691d019ed240c646f",
-        nickname: "genius",
-        avatar: "Profile1.png",
-      },
-      exchangedBook: {
-        title: "Justice",
-        cover: "028e43d0783530373609309002fa405e.png",
-      },
-      requestedBy: {
-        userId: "66309f8691d019ed240c646f",
-        nickname: "fool",
-        avatar: "Profile2.jpg",
-      },
-      latestMessage: {
-        text: "Bye bye",
-        createdAt: "2024-05-21T12:42:18.179+00:00",
-        seen: true,
-      },
-    },
-  ];
+  const {
+    data: apiData,
+    error: apiError,
+    isLoading: apiLoading,
+  } = api.useGetChatsQuery();
+  const {
+    data: meData,
+    error: meError,
+    isLoading: meLoading,
+  } = api.useGetMeQuery();
+  const { i18n } = useTranslation();
+  const [me, setMe] = useState(null);
+  const [chats, setChats] = useState([]);
 
-  const [chats, setChats] = useState(mockChats);
+  // Error handler
+  useEffect(() => {
+    const error = apiError || meError;
+    if (!error) return;
+    if (error.status === 401) {
+      showError(i18n.t("auth.expired"));
+      router.replace("/auth");
+    } else {
+      handleApiError(error, i18n);
+    }
+  }, [apiError, meError]);
+
+  // Initial data loader
+  useEffect(() => {
+    if (!apiData || !apiData.success) return;
+    if (!meData || !meData.success) return;
+    setMe(meData.data);
+    setChats(apiData.data.chats);
+  }, [apiData, meData]);
+
+  if (!me || meLoading || apiLoading) return <Loading />;
+
   return (
     <View
       style={{
@@ -77,20 +62,20 @@ export default function Tab() {
         }}
         ListEmptyComponent={NoChatsFound}
         data={chats}
-        renderItem={({ item }) => <Chat chat={item} />}
+        renderItem={({ item }) => <Chat chat={item} me={me} />}
         keyExtractor={(_, i) => i}
       />
     </View>
   );
 }
 
-export function Chat({ chat }) {
+export function Chat({ chat, me }) {
   const { i18n } = useTranslation();
-  const doIOffer = chat.offeredBy.userId === "myuserId";
+  const doIOffer = chat.offeredBy.userId === me.userId;
   const chatTitle = doIOffer
     ? chat.requestedBy.nickname
     : chat.offeredBy.nickname;
-  const latestMessageDate = chat.latestMessage
+  const latestMessageDate = chat.latestMessage?.text
     ? dayjs().to(dayjs(chat.latestMessage.createdAt), true)
     : i18n.t("chats.now");
   const firstBookCover = doIOffer
@@ -102,7 +87,11 @@ export function Chat({ chat }) {
   const secondBookCover = doIOffer
     ? chat.offeredBook.cover
     : chat.exchangedBook.cover;
-  const isLastMessageSeen = chat.latestMessage?.seen;
+  const isLastMessageSeen = chat.latestMessage?.text
+    ? chat.latestMessage.sender === me.userId
+      ? true
+      : chat.latestMessage.seen
+    : true;
 
   const handleChatSelection = () => {
     router.push({
@@ -127,7 +116,7 @@ export function Chat({ chat }) {
       <View
         style={{
           flexDirection: "row",
-          gap: 24,
+          gap: 16,
           padding: 8,
           borderRadius: 10,
           backgroundColor: "#f2f3f7",
@@ -161,7 +150,9 @@ export function Chat({ chat }) {
         style={{
           justifyContent: "flex-start",
           flexGrow: 1,
-          padding: 8,
+          paddingVertical: 12,
+          paddingLeft: 4,
+          paddingRight: 16,
         }}
       >
         <View
@@ -173,9 +164,17 @@ export function Chat({ chat }) {
           }}
         >
           {/* Owner name */}
-          <Text style={{ fontWeight: "bold", fontSize: 18 }}>{chatTitle}</Text>
+          <Text style={{ fontWeight: "bold", fontSize: 18, flexShrink: 1 }}>
+            {shorten(chatTitle)}
+          </Text>
           {/* Last message date */}
-          <Text style={{ fontWeight: "400", fontSize: 14, color: "#6E7A9F" }}>
+          <Text
+            style={{
+              fontWeight: "400",
+              fontSize: 14,
+              color: "#6E7A9F",
+            }}
+          >
             {latestMessageDate}
           </Text>
         </View>
@@ -187,9 +186,14 @@ export function Chat({ chat }) {
           }}
         >
           {/* Last message text */}
-          <Text style={{ fontWeight: isLastMessageSeen ? "normal" : "500" }}>
+          <Text
+            style={{
+              fontWeight: isLastMessageSeen ? "normal" : "500",
+              flexShrink: 1,
+            }}
+          >
             {shorten(
-              chat.latestMessage
+              chat.latestMessage?.text
                 ? chat.latestMessage.text
                 : i18n.t("chats.write")
             )}
@@ -219,8 +223,4 @@ function NoChatsFound() {
 
 function UnseenIndicator() {
   return <Ionicons name="ellipse" size={12} color="#FF6746" />;
-}
-
-function shorten(text) {
-  return text.length > 20 ? `${text.slice(0, 20)}...` : text;
 }

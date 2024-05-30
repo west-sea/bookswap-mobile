@@ -91,7 +91,7 @@
   },
   "bookshelf": {
     "header": "Available",
-    "empty": "You haven't added any books yet...",
+    "empty": "You don't have available books yet...",
     "empty-feedback": "Try adding one by pressing the plus button below",
     "private": "Private",
     "public": "Public",

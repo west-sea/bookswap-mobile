@@ -4,7 +4,7 @@ const baseUrl = process.env.EXPO_PUBLIC_API_BASE_URL;
 
 export const api = createApi({
   reducerPath: "api",
-  tagTypes: ["user", "exchanges", "books"],
+  tagTypes: ["user", "exchanges", "books", "chats", "notifications"],
   baseQuery: fetchBaseQuery({
     baseUrl,
     prepareHeaders: (headers, { getState, endpoint, extra }) => {
@@ -54,7 +54,7 @@ export const api = createApi({
     }),
     getMyExchanges: builder.query({
       query: () => "exchanges/my",
-      providesTags: ["exchanges"],
+      providesTags: ["exchanges", "books"],
     }),
     uploadBook: builder.mutation({
       query: (body) => ({
@@ -69,7 +69,7 @@ export const api = createApi({
     }),
     getMyBookshelf: builder.query({
       query: () => "books/bookshelf/my",
-      providesTags: ["books"],
+      providesTags: ["books", "exchanges"],
     }),
     deleteBook: builder.mutation({
       query: (id) => ({
@@ -124,7 +124,7 @@ export const api = createApi({
           bookId,
         },
       }),
-      invalidatesTags: ["books", "exchanges"],
+      invalidatesTags: ["books", "exchanges", "notifications"],
     }),
     getBookExchanges: builder.query({
       query: (id) => `exchanges/${id}`,
@@ -140,10 +140,32 @@ export const api = createApi({
         method: "POST",
         body: {
           bookId,
-          exchangeId
+          exchangeId,
         },
       }),
-      invalidatesTags: ["books", "exchanges"],
+      invalidatesTags: ["books", "exchanges", "notifications"],
+    }),
+    getChats: builder.query({
+      query: () => `chats`,
+      providesTags: ["chats", "exchanges"],
+    }),
+    getChat: builder.query({
+      query: (id) => `chats/${id}`,
+      providesTags: ["chats", "exchanges"],
+    }),
+    completeSwap: builder.mutation({
+      query: (exchangeId) => ({
+        url: `exchanges/swap`,
+        method: "POST",
+        body: {
+          exchangeId,
+        },
+      }),
+      invalidatesTags: ["exchanges", "chats", "notifications"],
+    }),
+    getNotifications: builder.query({
+      query: () => "/notifications/my",
+      providesTags: ["notifications"],
     }),
   }),
 });

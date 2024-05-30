@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View, Text, Image, TouchableOpacity, FlatList } from "react-native";
 import { getAvatarUrl } from "../../../components/users/Avatar";
 import { useTranslation } from "react-i18next";
@@ -6,86 +6,41 @@ import dayjs from "dayjs";
 import { Ionicons, Octicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import PageHeader from "../../../components/PageHeader";
+import { api } from "../../../store/api";
+import { showError } from "../../../components/Toaster";
+import { handleApiError } from "../../../store/utils";
+import Loading from "../../../components/Loading";
 
 export default function NotificationsPage() {
-  const mockNotifications = [
-    {
-      type: "ARCHIVE",
-      // type: "REQUEST",
-      // type: "APPROVE",
-      // type: "EXCHNAGE",
-      book: {
-        bookId: "66366aca6e056ed36ce6cc72",
-        cover: "028e43d0783530373609309002fa405e.png",
-      },
-      actor: {
-        nickname: "genius",
-        avatar: "Profile1.png",
-      },
-      seen: false,
-      createdAt: "2024-05-04T17:13:33.087Z",
-      notificationId: "66366cbd87d37569de408b7f",
-      exchangeId: "663660611fe6f082aa9f9f26",
-    },
-    {
-      // type: "ARCHIVE",
-      type: "REQUEST",
-      // type: "APPROVE",
-      // type: "EXCHNAGE",
-      book: {
-        bookId: "66366aca6e056ed36ce6cc72",
-        cover: "028e43d0783530373609309002fa405e.png",
-      },
-      actor: {
-        nickname: "genius",
-        avatar: "Profile1.png",
-      },
-      seen: false,
-      createdAt: "2024-05-04T17:13:33.087Z",
-      notificationId: "66366cbd87d37569de408b7f",
-      exchangeId: "663660611fe6f082aa9f9f26",
-    },
-    {
-      // type: "ARCHIVE",
-      // type: "REQUEST",
-      type: "APPROVE",
-      // type: "EXCHNAGE",
-      book: {
-        bookId: "66366aca6e056ed36ce6cc72",
-        cover: "028e43d0783530373609309002fa405e.png",
-      },
-      actor: {
-        nickname: "genius",
-        avatar: "Profile1.png",
-      },
-      seen: true,
-      createdAt: "2024-05-04T17:13:33.087Z",
-      notificationId: "66366cbd87d37569de408b7f",
-      exchangeId: "663660611fe6f082aa9f9f26",
-    },
-    {
-      // type: "ARCHIVE",
-      // type: "REQUEST",
-      // type: "APPROVE",
-      type: "EXCHANGE",
-      book: {
-        bookId: "66366aca6e056ed36ce6cc72",
-        cover: "028e43d0783530373609309002fa405e.png",
-      },
-      actor: {
-        nickname: "genius",
-        avatar: "Profile1.png",
-      },
-      seen: true,
-      createdAt: "2024-05-04T17:13:33.087Z",
-      notificationId: "66366cbd87d37569de408b7f",
-      exchangeId: "663660611fe6f082aa9f9f26",
-    },
-  ];
-
+  const {
+    data: apiData,
+    error: apiError,
+    isLoading: apiLoading,
+  } = api.useGetNotificationsQuery();
   const { i18n } = useTranslation();
+  const [notifications, setNotifications] = useState([]);
 
-  const [notifications, setNotifications] = useState(mockNotifications);
+  // Error handler
+  useEffect(() => {
+    const error = apiError;
+    if (!error) return;
+    if (error.status === 401) {
+      showError(i18n.t("auth.expired"));
+      router.replace("/auth");
+    } else {
+      handleApiError(error, i18n);
+    }
+  }, [apiError]);
+
+  // Initial data loader
+  useEffect(() => {
+    if (!apiData || !apiData.success) return;
+    setNotifications(apiData.data.notifications);
+    console.log(apiData);
+    // setApiData(data.data.books);
+  }, [apiData]);
+
+  if (apiLoading) return <Loading />;
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
@@ -118,7 +73,10 @@ function Notification({ notification }) {
       text = i18n.t("notifications.request", {
         A: notification.actor.nickname,
       });
-      action = { pathname: "TODO" };
+      action = {
+        pathname: "bookshelf/requests",
+        params: { bookId: notification.book.bookId },
+      };
       break;
     case "APPROVE":
       text = i18n.t("notifications.accept", {

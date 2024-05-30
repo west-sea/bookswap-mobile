@@ -22,25 +22,6 @@ import Loading from "../../../components/Loading";
 import { capitalize } from "../../../components/book/BookItem";
 
 export default function Tab() {
-  const mockBooks = [
-    {
-      title: "Me Before You",
-      author: "JoJo Moyes",
-      genre: "Novel",
-      createdAt: "2024-05-03T12:42:18.179Z",
-      bookId: "6634dbaaaf67fac193ebb5f8",
-      cover: "028e43d0783530373609309002fa405e.png",
-    },
-    {
-      title: "Me Before You",
-      author: "JoJo Moyes",
-      genre: "Novel",
-      createdAt: "2024-05-04T08:39:19.470Z",
-      bookId: "6635f437364f4c9412fa263f",
-      cover: "028e43d0783530373609309002fa405e.png",
-    },
-  ];
-
   const params = useLocalSearchParams();
   const requestedUser = {
     userId: params.userId,

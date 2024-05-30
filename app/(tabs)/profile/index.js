@@ -10,6 +10,7 @@ import { api } from "../../../store/api";
 import { showError } from "../../../components/Toaster";
 import { handleApiError } from "../../../store/utils";
 import Loading from "../../../components/Loading";
+import { shorten } from "../../../components/book/BookItem";
 
 export default function Tab() {
   const { data, error: meError } = api.useGetMeQuery();
@@ -99,10 +100,10 @@ export default function Tab() {
           <Text
             style={{
               fontWeight: "bold",
-              fontSize: 24,
+              fontSize: 20,
             }}
           >
-            {me.nickname}
+            {shorten(me.nickname)}
           </Text>
         </View>
         {/* Edit button */}

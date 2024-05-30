@@ -16,87 +16,65 @@ import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 import SwappedImage from "../../../assets/png/chat/swapped.png";
 import PageHeader from "../../../components/PageHeader";
+import { api } from "../../../store/api";
+import { showError } from "../../../components/Toaster";
+import { getErrorMessage, handleApiError } from "../../../store/utils";
+import Loading from "../../../components/Loading";
+import { shorten } from "../../../components/book/BookItem";
+import { useSocket } from "../../../contexts/socket.ctx";
+import { useDispatch } from "react-redux";
 
 export default function ChatPage() {
-  const mockChat = {
-    exchangeId: "66309f8691d019ed240c646f",
-    // status: "APPROVED",
-    approvedAt: "2024-05-10T12:42:18.179+00:00",
-    status: "COMPLETED",
-    exchangedAt: "2024-05-21T12:42:18.179+00:00",
-    offeredBook: {
-      title: "Harry Potter",
-      cover: "028e43d0783530373609309002fa405e.png",
-    },
-    offeredBy: {
-      userId: "66309f8691d019ed240c646f",
-      nickname: "genius",
-      avatar: "Profile1.png",
-    },
-    exchangedBook: {
-      title: "Justice",
-      cover: "028e43d0783530373609309002fa405e.png",
-    },
-    requestedBy: {
-      userId: "my-user-id",
-      nickname: "fool",
-      avatar: "Profile2.png",
-    },
-    latestMessage: {
-      text: "Bye bye",
-      createdAt: "2024-05-20T12:42:18.179+00:00",
-      seen: true,
-    },
-  };
-  const mockMessages = [
-    {
-      sender: "66309f8691d019ed240c646f",
-      text: "Hello",
-      createdAt: "2024-05-14T12:42:18.179+00:00",
-      seen: false,
-    },
-    {
-      sender: "66309f8691d019ed240c646f",
-      text: "Thank you! When do you want to meet?",
-      createdAt: "2024-05-15T12:42:18.179+00:00",
-      seen: false,
-    },
-    {
-      sender: "66309f8691d019ed240c646f",
-      text: "That's a long message .... I hope you are doing well! ... Finish the project ASAP ... Good luck! ... Bye bye",
-      createdAt: "2024-05-15T12:43:18.179+00:00",
-      seen: false,
-    },
-    {
-      sender: "my-user-id",
-      text: "Nice to meet you! How about 11PM?",
-      createdAt: "2024-05-16T12:42:18.179+00:00",
-      seen: false,
-    },
-    {
-      sender: "66309f8691d019ed240c646f",
-      text: "Sounds good! See you then!",
-      createdAt: "2024-05-17T12:42:18.179+00:00",
-      seen: false,
-    },
-  ];
-
   const params = useLocalSearchParams();
+  const {
+    data: apiData,
+    error: apiError,
+    isLoading: apiLoading,
+  } = api.useGetChatQuery(params.exchangeId);
+  const {
+    data: meData,
+    error: meError,
+    isLoading: meLoading,
+  } = api.useGetMeQuery();
+  const [
+    completeExchange,
+    { error: completeError, isLoading: completeLoading },
+  ] = api.useCompleteSwapMutation();
+  const { socket } = useSocket();
+  const dispatch = useDispatch();
 
-  const [chat, setChat] = useState(mockChat);
-  const [messages, setMessages] = useState(mockMessages);
+  const [me, setMe] = useState(null);
+  const [chat, setChat] = useState(null);
+  const [messages, setMessages] = useState([]);
   const [history, setHistory] = useState([]);
   const [text, setText] = useState("");
   const flatlist = useRef(null);
   const { i18n } = useTranslation();
 
-  useEffect(() => {
-    console.log(`Exchange ID: `, params.exchangeId);
-    scrollToEnd();
-  }, []);
+  const doIOffer = chat?.offeredBy.userId === me?.userId;
+  const sender = doIOffer ? chat?.requestedBy : chat?.offeredBy;
 
-  const doIOffer = chat.offeredBy.userId === "my-user-id";
-  const sender = doIOffer ? chat.requestedBy : chat.offeredBy;
+  // Error handler
+  useEffect(() => {
+    const error = apiError || meError || completeError;
+    if (!error) return;
+    if (error.status === 401) {
+      showError(i18n.t("auth.expired"));
+      router.replace("/auth");
+    } else {
+      handleApiError(error, i18n);
+    }
+  }, [apiError, meError, completeError]);
+
+  // Initial data loader
+  useEffect(() => {
+    if (!meData || !meData.success) return;
+    if (!apiData || !apiData.success) return;
+    setMe(meData.data);
+    setChat(apiData.data.chat);
+    setMessages(apiData.data.messages);
+    scrollToEnd();
+  }, [apiData, meData]);
 
   useEffect(() => {
     if (!chat || !messages) return;
@@ -169,27 +147,24 @@ export default function ChatPage() {
     setHistory(history);
   }, [chat, messages]);
 
-  const handleBack = () => {
-    router.back();
-  };
-
-  const handleComplete = () => {
-    console.log("Exchange Completed");
+  const handleComplete = async () => {
+    try {
+      const { data } = await completeExchange(params.exchangeId);
+      console.log(data);
+      if (!data || !data.success) throw new Error();
+    } catch (error) {
+      showError(getErrorMessage(error.code, i18n));
+    }
   };
 
   const handleSendMessage = () => {
     if (!text) return;
-    console.log("Send message: ", text);
+    socket.emit("message", {
+      exchangeId: params.exchangeId,
+      text,
+    });
     setText("");
-    setMessages([
-      ...messages,
-      {
-        sender: "my-user-id",
-        text,
-        createdAt: Date.now(),
-        seen: false,
-      },
-    ]);
+    dispatch(api.util.invalidateTags(["chats"]));
     scrollToEnd();
   };
 
@@ -198,6 +173,9 @@ export default function ChatPage() {
     if (history.length === 0) return;
     flatlist.current.scrollToIndex({ index: history.length - 1 });
   };
+
+  if (!me || !chat || apiLoading || meLoading || completeLoading)
+    return <Loading />;
 
   return (
     <KeyboardAvoidingView
@@ -209,7 +187,7 @@ export default function ChatPage() {
       {/* Header */}
       <View>
         {/* Chat title */}
-        <PageHeader title={sender.nickname} />
+        <PageHeader title={shorten(sender.nickname, 20)} />
         {/* Chat info */}
         <View
           style={{
@@ -286,9 +264,9 @@ export default function ChatPage() {
         keyExtractor={(_, i) => i}
         renderItem={({ item }) =>
           item.action ? (
-            <ActionMessage action={item.action} date={item.date} />
+            <ActionMessage action={item.action} date={item.date} me={me} />
           ) : (
-            <Message message={item} sender={sender} />
+            <Message message={item} sender={sender} me={me} />
           )
         }
         ListEmptyComponent={EmptyChat}
@@ -356,7 +334,7 @@ function EmptyChat() {
 }
 
 function Message(props) {
-  const isMine = props.message.sender === "my-user-id";
+  const isMine = props.message.sender === props.me.userId;
 
   return isMine ? (
     <OutgoingMessage {...props} />
@@ -365,7 +343,7 @@ function Message(props) {
   );
 }
 
-function ActionMessage({ action, date }) {
+function ActionMessage({ action, date, me }) {
   if (action.type === "DATE") {
     return <DateAction date={date} />;
   }
@@ -379,7 +357,9 @@ function ActionMessage({ action, date }) {
     );
   }
   if (action.type === "EXCHANGE") {
-    return <ExchangeAction date={date} requestedBy={action.requestedBy} />;
+    return (
+      <ExchangeAction date={date} requestedBy={action.requestedBy} me={me} />
+    );
   }
 }
 
@@ -438,8 +418,8 @@ function ApproveAction({ date, requestedBy, offeredBy }) {
   );
 }
 
-function ExchangeAction({ date, requestedBy }) {
-  const isRequestedByMe = requestedBy.userId === "my-user-id";
+function ExchangeAction({ date, requestedBy, me }) {
+  const isRequestedByMe = requestedBy.userId === me.userId;
   const { i18n } = useTranslation();
   return (
     <View
