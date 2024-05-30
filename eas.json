@@ -8,7 +8,12 @@
       "distribution": "internal"
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_FIREBASE_WEB_CLIENT_ID": "459198849277-7u2fmsi4a8rr0h1obqspvgrg9ed8jnqh.apps.googleusercontent.com",
+        "EXPO_PUBLIC_API_BASE_URL": "http://34.207.152.186",
+        "EXPO_PUBLIC_API_SOCKET_URL": "http://34.207.152.186"
+      }
     },
     "production": {}
   },
