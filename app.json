@@ -14,7 +14,8 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true,
+      "supportsTablet": false,
+      "bundleIdentifier": "com.sss.bookswap",
       "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
