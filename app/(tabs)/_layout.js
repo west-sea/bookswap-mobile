@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import {
   Ionicons,
@@ -19,11 +19,18 @@ import { signIn } from "../../store/auth";
 export default function TabLayout() {
   const { i18n } = useTranslation();
   const authState = useSelector((state) => state.auth);
-  const { isLoading, token } = useSession();
+  const [isLoading, setIsLoading] = useState(true);
+  const { isLoading: isSessionLoading, token } = useSession();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (isLoading) return;
+    const timeoutId = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+    return () => clearTimeout(timeoutId);
+  }, []);
+
+  useEffect(() => {
     if (!authState.token) {
       // try loading from storage
       if (token) {
@@ -32,15 +39,13 @@ export default function TabLayout() {
             token,
           })
         );
-      } else {
-        router.replace("/auth");
       }
     }
-  }, [isLoading]);
+  }, [token]);
 
-  if (isLoading) return <Splash />;
+  if (isLoading || isSessionLoading) return <Splash />;
 
-  if (!token) {
+  if (!authState.token) {
     return <Redirect href="/auth" />;
   }
 

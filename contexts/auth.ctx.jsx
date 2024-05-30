@@ -9,6 +9,7 @@ const AuthContext = React.createContext({
   signIn: () => null,
   signOut: () => null,
   token: null,
+  isLoading: true,
 });
 
 export function useSession() {
@@ -40,8 +41,7 @@ export function SessionProvider(props) {
             dispatch(signOut());
             setSession(null);
             dispatch(api.util.resetApiState());
-          } catch (error) {
-          }
+          } catch (error) {}
         },
         token: session,
         isLoading,
