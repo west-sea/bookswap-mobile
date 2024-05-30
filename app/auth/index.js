@@ -21,6 +21,7 @@ export default function Page() {
   const { signIn } = useSession();
   const signInWithGoogle = useGoogleAuth();
   const { i18n } = useTranslation();
+  const [errors, setErrors] = useState([]);
 
   useEffect(() => {
     if (!error) return;
@@ -36,67 +37,106 @@ export default function Page() {
   };
 
   const onGoogleAuth = async () => {
+    const newErrors = ["START"];
     setIsSigningIn(true);
     try {
+      newErrors.push("START TRY");
       const result = await signInWithGoogle();
+      newErrors.push("GOT RESULT");
       if (!result || !result.userInfo) {
-        showInfo(`GOOGLE ERROR: ${result.error}`);
-        throw result.error || new Error();
+        newErrors.push(`NO RESULT. GOOGLE ERROR: ${result?.error}`);
+        throw result?.error || new Error();
       }
+      newErrors.push(`AFTER RESULT CHECK`);
       const { idToken, user } = result.userInfo;
       const { email, name } = user;
+      newErrors.push(`AFTER DESTRUCTURE`);
       // send login request to server
       let { data } = await login({ token: idToken });
+      newErrors.push(`AFTER LOGIN REQUEST`);
       if (!data || !data.success) {
-        showInfo(`API ERROR: ${data.success} - ${data.issues}`);
+        newErrors.push(
+          `NO DATA. API ERROR: ${data?.success} - ${JSON.stringify(
+            data?.issues || { nothing: true }
+          )}`
+        );
         throw new Error();
       }
+      newErrors.push(`AFTER DATA CHECK`);
       // IF user is not registered, go to boarding page with boardingData
       data = data.data;
+      newErrors.push(`BEFORE BOARDING CHECK: ${JSON.stringify(data)}`);
       if (data.boarding === true) {
-        router.push({
-          pathname: "/auth/boarding",
-          params: {
-            userId: data.userId,
-            email,
-            name,
-          },
-        });
+        newErrors.push(`GO TO BOARDING`);
+        // router.push({
+        //   pathname: "/auth/boarding",
+        //   params: {
+        //     userId: data.userId,
+        //     email,
+        //     name,
+        //   },
+        // });
       } else {
+        newErrors.push(`GO TO WELCOME: ${JSON.stringify(data)}`);
         // IF successful, store token in session and go to welcome page
-        signIn(data.token, data.user);
-        router.replace({
-          pathname: "/auth/welcome",
-          params: {
-            name,
-          },
-        });
+        // signIn(data.token, data.user);
+        // router.replace({
+        //   pathname: "/auth/welcome",
+        //   params: {
+        //     name,
+        //   },
+        // });
       }
     } catch (error) {
       if (!error) {
-        showError(i18n.t("errors.UNKNOWN_ERROR"));
+        newErrors.push(`NO ERROR`);
+        // showError(i18n.t("errors.UNKNOWN_ERROR"));
         return;
       } else {
+        newErrors.push(`THERE IS ERROR: ${JSON.stringify(error)}`);
         const errorCode = error.code;
-        showError(`Code: ${errorCode}. ${error.message}, ${error}`);
+        newErrors.push(`ERROR CODE: ${errorCode}`);
+        // showError(`Code: ${errorCode}. ${error.message}, ${error}`);
         switch (errorCode) {
           case statusCodes.SIGN_IN_CANCELLED:
-            showError(i18n.t("errors.SIGN_IN_CANCELLED"));
+            newErrors.push(`SIGN IN CANCELLED`);
+            // showError(i18n.t("errors.SIGN_IN_CANCELLED"));
             break;
           case statusCodes.IN_PROGRESS:
-            showError(i18n.t("errors.SIGN_IN_IN_PROGRESS"));
+            newErrors.push(`SIGN IN IN PROGRESS`);
+            // showError(i18n.t("errors.SIGN_IN_IN_PROGRESS"));
             break;
           case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
-            showError(i18n.t("errors.SIGN_IN_NOT_SUPPORTED"));
+            newErrors.push(`PLAY SERVICES NOT AVAILABLE`);
+            // showError(i18n.t("errors.SIGN_IN_NOT_SUPPORTED"));
             break;
           default:
+            newErrors.push(`SIGN IN ERROR`);
             // showError(i18n.t("errors.SIGN_IN_ERROR"));
             break;
         }
       }
     }
     setIsSigningIn(false);
+    setErrors(newErrors);
   };
+
+  if (errors.length > 0) {
+    return (
+      <View
+        style={{
+          paddingVertical: 32,
+          paddingHorizontal: 16,
+        }}
+      >
+        {errors.map((error, index) => (
+          <Text key={index}>
+            {index}. {error}
+          </Text>
+        ))}
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
