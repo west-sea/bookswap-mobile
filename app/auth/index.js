@@ -9,7 +9,7 @@ import { router } from "expo-router";
 import { useSession } from "../../contexts/auth.ctx";
 import { useGoogleAuth } from "../../hooks/useGoogleAuth";
 import GoogleSignInButton from "../../components/buttons/GoogleSignInButton";
-import { showError } from "../../components/Toaster";
+import { showError, showInfo } from "../../components/Toaster";
 import { useTranslation } from "react-i18next";
 import { Ionicons } from "@expo/vector-icons";
 import { api } from "../../store/api";
@@ -40,13 +40,17 @@ export default function Page() {
     try {
       const result = await signInWithGoogle();
       if (!result || !result.userInfo) {
+        showInfo(`GOOGLE ERROR: ${result.error}`);
         throw result.error || new Error();
       }
       const { idToken, user } = result.userInfo;
       const { email, name } = user;
       // send login request to server
       let { data } = await login({ token: idToken });
-      if (!data || !data.success) throw new Error();
+      if (!data || !data.success) {
+        showInfo(`API ERROR: ${data.success} - ${data.issues}`);
+        throw new Error();
+      }
       // IF user is not registered, go to boarding page with boardingData
       data = data.data;
       if (data.boarding === true) {
