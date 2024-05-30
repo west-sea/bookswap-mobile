@@ -49,6 +49,7 @@ export default function Tab() {
     try {
       if (!text || text.length < 3) {
         showError(i18n.t("editProfile.nickname-invalid"));
+        setIsLoading(false);
         return;
       }
       const formData = new FormData();

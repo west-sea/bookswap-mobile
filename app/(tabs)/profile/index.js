@@ -103,7 +103,7 @@ export default function Tab() {
               fontSize: 20,
             }}
           >
-            {shorten(me.nickname)}
+            {shorten(me.nickname, 10)}
           </Text>
         </View>
         {/* Edit button */}

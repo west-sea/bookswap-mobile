@@ -51,7 +51,6 @@ export default function BookItem({ book }) {
       // Data submission
       const { data } = await requestBook(book.bookId);
       if (!data || !data.success) throw new Error();
-      console.log(data);
     } catch (error) {
       showError(getErrorMessage(error.code, i18n));
     }
@@ -78,11 +77,19 @@ export default function BookItem({ book }) {
         style={{ width: 75, height: 100, borderRadius: 4 }}
       />
       {/* Book info */}
-      <View style={{ gap: 4, justifyContent: "space-around" }}>
+      <View
+        style={{
+          gap: 4,
+          justifyContent: "space-around",
+          alignItems: "baseline",
+        }}
+      >
         {/* Title */}
-        <Text style={{ fontWeight: "bold", fontSize: 24 }}>{book.title}</Text>
+        <Text style={{ fontWeight: "bold", fontSize: 24 }}>
+          {shorten(book.title, 20)}
+        </Text>
         {/* Author */}
-        <Text style={{ fontSize: 14 }}>{book.author}</Text>
+        <Text style={{ fontSize: 14 }}>{shorten(book.author)}</Text>
         {/* Descriptors */}
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           {/* Date posted to the system */}
@@ -152,6 +159,7 @@ function ActionButton({
         paddingHorizontal: 16,
         paddingVertical: 8,
         borderRadius: 40,
+        // width: "auto",
         flexDirection: "row",
         gap: 4,
         justifyContent: "space-evenly",

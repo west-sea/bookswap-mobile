@@ -32,7 +32,6 @@ export default function SearchPage() {
   useEffect(() => {
     const error = searchError;
     if (!error) return;
-    console.log(error.data.issues);
     if (error.status === 401) {
       showError(i18n.t("auth.expired"));
       router.replace("/auth");
@@ -51,7 +50,7 @@ export default function SearchPage() {
   };
 
   const handleSearch = async () => {
-    if (!text || text.length < 3) {
+    if (!text || text.length < 1) {
       showInfo(i18n.t("search.no-text"));
       return;
     }

@@ -36,8 +36,6 @@ export default function NotificationsPage() {
   useEffect(() => {
     if (!apiData || !apiData.success) return;
     setNotifications(apiData.data.notifications);
-    console.log(apiData);
-    // setApiData(data.data.books);
   }, [apiData]);
 
   if (apiLoading) return <Loading />;

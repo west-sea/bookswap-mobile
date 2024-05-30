@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import PageHeader from "../../components/PageHeader";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
@@ -105,7 +105,7 @@ export default function Tab() {
   if (isLoading || isUploadLoading) return <Loading />;
 
   return (
-    <View style={{ flex: 1, backgroundColor: "white" }}>
+    <ScrollView style={{ flex: 1, backgroundColor: "white" }}>
       <PageHeader
         title={i18n.t("upload.title")}
         actionButton={
@@ -141,6 +141,6 @@ export default function Tab() {
           setExceptions,
         }}
       />
-    </View>
+    </ScrollView>
   );
 }

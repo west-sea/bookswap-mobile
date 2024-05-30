@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import { Octicons } from "@expo/vector-icons";
-import { View, Text, FlatList, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  Pressable,
+  RefreshControl,
+  ActivityIndicator,
+} from "react-native";
 import { genres } from "../../../old-api/constants";
 import BookItem, { capitalize } from "../../../components/book/BookItem";
 import { useTranslation } from "react-i18next";
@@ -9,6 +16,7 @@ import Loading from "../../../components/Loading";
 import { showError } from "../../../components/Toaster";
 import { router } from "expo-router";
 import { handleApiError } from "../../../store/utils";
+import { useDispatch } from "react-redux";
 
 export default function Tab() {
   const { data, isLoading, error } = api.useGetFeedQuery();
@@ -16,7 +24,9 @@ export default function Tab() {
   const [books, setBooks] = useState([]);
   const [selectedGenres, setSelectedGenres] = useState([]);
   const { i18n } = useTranslation();
-  
+  const [refreshing, setRefreshing] = useState(false);
+  const dispatch = useDispatch();
+
   // Error handler
   useEffect(() => {
     if (!error) return;
@@ -30,7 +40,6 @@ export default function Tab() {
 
   // Initial data loader
   useEffect(() => {
-    console.log(data);
     if (!data || !data.success) return;
     setApiData(data.data.books);
   }, [data]);
@@ -38,6 +47,18 @@ export default function Tab() {
   useEffect(() => {
     updateBooks();
   }, [apiData, selectedGenres]);
+
+  const onRefresh = () => {
+    dispatch(
+      api.util.invalidateTags([
+        "books",
+        "exchanges",
+        "notifications",
+        "user",
+        "chats",
+      ])
+    );
+  };
 
   const updateBooks = () => {
     if (selectedGenres.length === 0) return setBooks(apiData);
@@ -83,6 +104,7 @@ export default function Tab() {
         keyExtractor={(_, i) => i}
       />
       {/* List of books */}
+      {refreshing ? <ActivityIndicator /> : null}
       <FlatList
         contentContainerStyle={{
           gap: 16,
@@ -94,6 +116,9 @@ export default function Tab() {
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => <BookItem book={item} />}
         keyExtractor={(_, i) => i}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       />
     </View>
   );

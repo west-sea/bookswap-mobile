@@ -11,7 +11,6 @@ import MessageLine from "../assets/svg/icon/messageLine.svg";
 import Add from "../assets/svg/icon/Add.svg";
 
 const NavigationBar = (action) => {
-    console.log('Action:', action);
     const handlePress = (routerPath) => {
         router.push({
             pathname: routerPath,

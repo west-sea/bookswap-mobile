@@ -150,7 +150,6 @@ export default function ChatPage() {
   const handleComplete = async () => {
     try {
       const { data } = await completeExchange(params.exchangeId);
-      console.log(data);
       if (!data || !data.success) throw new Error();
     } catch (error) {
       showError(getErrorMessage(error.code, i18n));

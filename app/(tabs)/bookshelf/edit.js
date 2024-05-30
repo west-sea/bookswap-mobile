@@ -1,7 +1,7 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import PageHeader from "../../../components/PageHeader";
 import BookForm from "../../../components/book/BookForm";
 import FormData from "form-data";
@@ -153,7 +153,7 @@ export default function Tab() {
   if (isBookLoading || isEditLoading) return <Loading />;
 
   return (
-    <View>
+    <ScrollView>
       <PageHeader
         title={i18n.t("editBook.title")}
         actionButton={
@@ -196,6 +196,6 @@ export default function Tab() {
           setExceptions,
         }}
       />
-    </View>
+    </ScrollView>
   );
 }

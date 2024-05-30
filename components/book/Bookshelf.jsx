@@ -15,7 +15,7 @@ import { getAvatarUrl } from "../users/Avatar";
 import { useEffect, useState } from "react";
 import { router } from "expo-router";
 import OptionsModal from "./Modal";
-import { capitalize } from "./BookItem";
+import { capitalize, shorten } from "./BookItem";
 import { api } from "../../store/api";
 import { showError } from "../Toaster";
 import { handleApiError } from "../../store/utils";
@@ -109,9 +109,11 @@ function MyBookItem({ book }) {
       {/* Book info */}
       <View style={{ gap: 4, justifyContent: "space-around", flexGrow: 1 }}>
         {/* Title */}
-        <Text style={{ fontWeight: "bold", fontSize: 24 }}>{book.title}</Text>
+        <Text style={{ fontWeight: "bold", fontSize: 24 }}>
+          {shorten(book.title, 10)}
+        </Text>
         {/* Author */}
-        <Text style={{ fontSize: 14 }}>{book.author}</Text>
+        <Text style={{ fontSize: 14 }}>{shorten(book.author)}</Text>
         {/* Descriptors */}
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           {/* Date posted to the system */}
@@ -144,16 +146,22 @@ function MyBookItem({ book }) {
           )}
           {isExceptionalPrivate && (
             <Text style={{ color: "#6E7A9F" }}>
-              {i18n.t("bookshelf.shownTo", {
-                count: book.exceptions?.length || 0,
-              })}
+              {shorten(
+                i18n.t("bookshelf.shownTo", {
+                  count: book.exceptions?.length || 0,
+                }),
+                8
+              )}
             </Text>
           )}
           {isExceptionalPublic && (
             <Text style={{ color: "#6E7A9F" }}>
-              {i18n.t("bookshelf.hiddenFrom", {
-                count: book.exceptions?.length || 0,
-              })}
+              {shorten(
+                i18n.t("bookshelf.hiddenFrom", {
+                  count: book.exceptions?.length || 0,
+                }),
+                8
+              )}
             </Text>
           )}
         </View>

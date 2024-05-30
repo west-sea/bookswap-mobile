@@ -41,7 +41,6 @@ export function SessionProvider(props) {
             setSession(null);
             dispatch(api.util.resetApiState());
           } catch (error) {
-            console.log(error);
           }
         },
         token: session,

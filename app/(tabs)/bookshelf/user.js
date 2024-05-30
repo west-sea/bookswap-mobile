@@ -80,7 +80,6 @@ export default function Tab() {
       // Data submission
       const { data } = await acceptRequest(body);
       if (!data || !data.success) throw new Error();
-      console.log(data);
       showSuccess(
         i18n.t("userBookshelf.success", { user: requestedUser.nickname })
       );

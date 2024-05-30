@@ -71,7 +71,6 @@ export default function Page() {
         });
       }
     } catch (error) {
-      console.log(error);
       if (!error) {
         showError(i18n.t("errors.UNKNOWN_ERROR"));
         return;
