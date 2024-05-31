@@ -10,9 +10,13 @@ function useAsyncState(initialValue = [true, null]) {
 
 export async function setStorageItemAsync(key, value) {
   if (value === null) {
-    await SecureStore.deleteItemAsync(key);
+    try {
+      await SecureStore.deleteItemAsync(key);
+    } catch (_) {}
   } else {
-    await SecureStore.setItemAsync(key, value);
+    try {
+      await SecureStore.setItemAsync(key, value);
+    } catch (_) {}
   }
 }
 
@@ -20,9 +24,15 @@ export function useStorageState(key) {
   const [state, setState] = useAsyncState();
 
   React.useEffect(() => {
-    SecureStore.getItemAsync(key).then((value) => {
-      setState(value);
-    });
+    try {
+      SecureStore.getItemAsync(key)
+        .then((value) => {
+          setState(value);
+        })
+        .catch((_) => {
+          setState(null);
+        });
+    } catch (_) {}
   }, [key]);
 
   const setValue = React.useCallback(
