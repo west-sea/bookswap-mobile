@@ -1,19 +1,74 @@
 # BookSwap
-## Project Introduction
-### Object
+## 1. Project Introduction
+### 1.1 Object
 BookSwap is a collaborative book-sharing platform designed for KAIST students, enhancing their access to a diverse range of books beyond the library’s collection. It features a search function to locate specific titles, a book exchange system, and a messaging tool for easy communication on transaction details, promoting reading and cultural enrichment among students.
 
-### Teammate
+### 1.2 Teammate
 - Alisher Ortiqov: Backend Development
 - Haerin Seo: Frontend development
 - Changsu Ham: UI/UX design, prototype
 - Sejun Jung: Project management
 
-### Development Environment
+### 1.3 Development Environment
 - Backend: Node JS
 - Frontend: React Native
 - Design: Figma
 - Project Management: Jira
+
+### 1.4 Project Structure
+```
+├── app/
+│   ├── (tabs)/
+│   │   ├── _layout.js
+│   │   ├── auth/
+│   │   │   ├── boarding.js
+│   │   │   ├── index.js
+│   │   │   └── welcome.js
+│   │   ├── tabs/
+│   │   │   ├── bookshelf/
+│   │   │   │   ├── edit.js
+│   │   │   │   ├── index.js
+│   │   │   │   ├── requests.js
+│   │   │   │   └── user.js
+│   │   │   ├── home/
+│   │   │   │   ├── index.js
+│   │   │   │   ├── notifications.js
+│   │   │   │   └── search.js
+│   │   │   ├── message/
+│   │   │   │   ├── chat.js
+│   │   │   │   └── index.js
+│   │   │   └── profile/
+│   │   │       ├── about.js
+│   │   │       ├── edit-genres.js
+│   │   │       ├── edit.js
+│   │   │       ├── index.js
+│   │   │       └── my-exchanges.js
+│   │   ├── index.js
+├── assets/
+│   ├── fonts/
+│   ├── png/
+│   └── svg/
+├── components/...
+├── contexts/...
+├── hooks/...
+├── locales/
+│   ├── english.json
+│   ├── i18n.js
+│   └── korean.json
+├── node_modules/...
+├── GoogleService-Info.plist
+├── metro.config.js
+├── README.md
+├── app.json
+├── eas.json
+├── GlobalStyles.js
+├── google-services.json
+├── old-api/
+├── store/
+├── babel.config.js
+├── package.json
+└── yarn.lock
+```
 
 ## 2. System Overview
 ### 2.1 Setting Up Your Profile and Uploading Your First Book
